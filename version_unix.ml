@@ -29,31 +29,38 @@ end
 
 module Version_Unix :S = struct
 
-  open Queue
-  open Mutex
-  open Unix
+  (* open Marshal
+   * open Mutex
+   * open Unix *)
   
   type 'a process = (unit -> 'a)
-  type 'a channel = { q: 'a Queue.t; m: Mutex.t ref; }
+  type 'a channel = { fd_out: Unix.file_descr;
+                      fd_in: Unix.file_descr;
+                      m: Mutex.t ref; }
   type 'a in_port = 'a channel
   type 'a out_port = 'a channel
 
+
   let new_channel () =
-    let channel = { q = Queue.create (); m = Mutex.create (); } in
+    let my_pipe = Unix.pipe () in
+    let channel = { fd_out = snd my_pipe;
+                    fd_in = fst my_pipe;
+                    m = Mutex.create (); } in
     channel, channel
   
   let put value channel () =
     Mutex.lock channel.m;
-    Queue.push value channel.q;
+    let out_chan = Unix.out_channel_of_descr channel.fd_out in
+    Marshal.to_channel out_chan value [];
     Mutex.unlock channel.m
 
   let rec get channel () =
+    let in_chan = Unix.in_channel_of_descr channel.fd_in in
       try
         Mutex.lock channel.m;
-        let value = Queue.pop channel.q in
-        Mutex.unlock channel.m;
-        value 
-      with Queue.Empty ->
+        let value = Marshal.from_channel in_chan in
+        Mutex.unlock channel.m; value
+      with End_of_file ->
         Mutex.unlock channel.m;
         get channel () 
 
@@ -71,3 +78,4 @@ module Version_Unix :S = struct
 
   let run p = p ()
 end
+
