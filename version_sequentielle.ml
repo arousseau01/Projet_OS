@@ -11,23 +11,17 @@ module type S = sig
   val run: 'a process -> 'a
 end
 
-module type Monad = sig 
-  type 'a process
-  val bind: 'a process -> ('a -> 'b process) -> 'b process
-  val return: 'a -> 'a process 
-end
-
-module Instance : Monad with type 'a process = ('a -> unit) -> unit  = struct 
-  type 'a process = ('a -> unit) -> unit
+module Instance (*: S with type 'a process = 'a process *) = struct 
+  type 'a m = ('a -> unit) -> unit
   let bind f k = fun c -> f (fun a -> k a c)
   let return x = fun c -> c x
 
   type action_type = 
-    | Atom of action_type process
+    | Atom of action_type m
     | Fork of action_type*action_type
     | Stop
   
-  type 'a cprocess = 'a -> action_type -> action_type
+  type 'a process = 'a -> action_type -> action_type (* ce sont les process réels *)
   let action_fun p = p (fun a -> Stop)
   let atom p c = Atom (bind p (fun a -> return (c a)))
   let stop c = Stop
@@ -43,10 +37,14 @@ module Instance : Monad with type 'a process = ('a -> unit) -> unit  = struct
 
   let run p = round [action_fun p]
 
-
+  (* A finir *)
+  type 'a in_port = int
+  type 'a out_port = int
+  let new_channel () = (1,1)
+  let put f p = fun f -> ()
+  let get p = fun f -> () 
+  let doco l = fun f -> ()
 end
-
-
 
 
 
