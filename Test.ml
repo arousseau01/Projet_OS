@@ -1,4 +1,4 @@
-#require "unix"
+open Version_unix
 
 module Lib (K : S) = struct
   let ( >>= ) x f = K.bind x f
@@ -28,6 +28,8 @@ module Example (K : S) = struct
       (fun (q_in, q_out) -> K.doco [ integers q_out ; output q_in ; ])
 end
 
-module Test = Example(Version_Unix) end
+module Test = struct 
+  
+end
 
-Version_Unix.run Test.main
+let _ = Version_Unix.run Test.main
