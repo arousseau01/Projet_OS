@@ -11,7 +11,7 @@ module type S = sig
   val run: 'a process -> 'a
 end
 
-module Instance (*: S with type 'a process = 'a process *) = struct 
+module Instance (*: (S with type 'a process = 'a -> action_type -> action_type) problème de signature *) = struct 
   type 'a m = ('a -> unit) -> unit
   let bind f k = fun c -> f (fun a -> k a c)
   let return x = fun c -> c x
@@ -35,15 +35,23 @@ module Instance (*: S with type 'a process = 'a process *) = struct
       | Stop -> round a_s
     end 
 
-  let run p = round [action_fun p]
+  let run_monade p = round [action_fun p] (* A modifier *)
 
-  (* A finir *)
-  type 'a in_port = int
-  type 'a out_port = int
-  let new_channel () = (1,1)
-  let put f p = fun f -> ()
-  let get p = fun f -> () 
-  let doco l = fun f -> ()
+  (* let run p a = let f = run_monade p in f (fun () -> ()); a *)
+
+  (* A finir (Mutex ?) *)
+  type 'a in_port = 'a Queue.t
+  type 'a out_port = 'a Queue.t
+  let new_channel () = (Queue.create (),Queue.create ())
+  let put a q f = atom (fun g -> Queue.add a q; g ()) f
+  let get q f = atom (fun g -> g (Queue.pop q)) f 
+
+
+  let rec doco l f = 
+    match l with 
+      | [] -> f ()
+      | t::q -> fork t (fun () -> doco q f)
+
 end
 
 
