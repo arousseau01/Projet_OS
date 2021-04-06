@@ -55,7 +55,7 @@ module Version_Unix :S = struct
 
     (* Initiation d'un client *)
     
-    let fd1 = Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
+    let fd = Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
     Unix.connect fd1 sockaddr;
 
     (* Connection du client *)
@@ -64,17 +64,10 @@ module Version_Unix :S = struct
     (* Local : pas besoin de récuperer la sortie de accept *)
     
     
-    let channel =  { fd_out = fd1;
-                    fd_in = fd1;
+    let channel =  { fd_out = fd;
+                    fd_in = fd;
                     m = Mutex.create (); } in
     channel, channel
-
-  (* let new_channel () =
-   *   let my_pipe = Unix.pipe () in
-   *   let channel = { fd_out = snd my_pipe;
-   *                   fd_in = fst my_pipe;
-   *                   m = Mutex.create (); } in
-   *   channel, channel *)
   
   let put value channel () =
     Mutex.lock channel.m;
