@@ -41,8 +41,15 @@ module Version_Unix :S = struct
   type 'a in_port = 'a channel
   type 'a out_port = 'a channel
 
-  let new_channel_client sockaddr =
+  let new_channel_client () =
     (* côté client *)
+    let port, hostname = 
+    if (Array.length Sys.argv) >= 4
+    then (12345, Unix.gethostname ())
+    else (int_of_string Sys.argv.(2), Sys.argv.(3))
+    in
+    let host = Unix.gethostbyname hostname in
+    let sockaddr = Unix.ADDR_INET (host.Unix.h_addr_list.(0), port) in
     let fd = Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
     Unix.connect fd sockaddr;
     let channel =  { fd_out = fd;
@@ -50,29 +57,35 @@ module Version_Unix :S = struct
                      m = Mutex.create (); } in
     channel, channel
 
-  let new_channel_server sockaddr =
+  let new_channel_server () =
     (* côté serveur *)
+
+    let localhost = Unix.gethostname () in
+    let host = Unix.gethostbyname localhost in
+    let port = 
+      if (Array.length Sys.argv) >= 3
+      then int_of_string Sys.argv.(2)
+      else 12345
+    in
+    let sockaddr = Unix.ADDR_INET (host.Unix.h_addr_list.(0), port) in
     let fd_server =  Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
     Unix.bind fd_server sockaddr;
     Unix.listen fd_server 10;
     let fd, cliend_addr = Unix.accept fd_server in
     
     let channel =  { fd_out = fd;
-                    fd_in = fd;
-                    m = Mutex.create (); } in
+                     fd_in = fd;
+                     m = Mutex.create (); } in
     channel, channel
 
   let new_channel () =
     (* retourne un canal de communication du dôté serveur ou client *)
 
-    let localhost = Unix.gethostname () in
-    let host = Unix.gethostbyname localhost in
-    let sockaddr = Unix.ADDR_INET (host.Unix.h_addr_list.(0), 12346) in
-
     match Sys.argv.(1) with
-    | "server" -> new_channel_server sockaddr
-    | "client" -> new_channel_client sockaddr
+    | "server" -> new_channel_server ()
+    | "client" -> new_channel_client ()
     | _ -> failwith "missing argument (server / client)"
+
 
   let put value channel () =
     Mutex.lock channel.m;
