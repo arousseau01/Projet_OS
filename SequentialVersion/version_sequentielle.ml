@@ -11,92 +11,119 @@ module type S = sig
   val run: 'a process -> 'a
 end
 
-module Instance (*: (S with type 'a process = 'a -> action_type -> action_type) problème de signature *) = struct 
+module Monad = struct (* Inutile mais a servi à comprendre l'article *)
   type 'a m = ('a -> unit) -> unit
   let bind f k = fun c -> f (fun a -> k a c)
   let return x = fun c -> c x
 
   type action_type = 
     | Atom of action_type m
-    | Fork of action_type*action_type
+    | Fork of action_type * action_type
     | Stop
   
-  type 'a process = ('a -> action_type) -> action_type (* ce sont les process réels *)
+  type 'a process = ('a -> action_type) -> action_type 
   let action_fun p = p (fun a -> Stop)
   let atom p c = Atom (bind p (fun a -> return (c a)))
   let stop c = Stop
-  let par p1 p2 c = Fork (p1 c,p2 c) 
+  let par p1 p2 (c:'a -> action_type) = Fork (p1 c,p2 c) 
   let fork p c = Fork (action_fun p,c ())
   let rec round p_list = match p_list with 
     | [] -> return ()
     | a::a_s -> begin match a with 
-      | Atom a_m -> bind a_m (fun a' -> round (List.concat [a_s;[a']]))
+      | Atom a_m -> bind a_m ( fun a' -> round (List.concat [a_s;[a']]) )
       | Fork (a1,a2) -> round (List.concat [a_s;[a1;a2]])
       | Stop -> round a_s
     end 
 
-  let run_monade p = round [action_fun p] (* A modifier *)
-
-  (* let run p a = let f = run_monade p in f (fun () -> ()); a *)
-
-  (* A finir (Mutex ?) *)
-  type 'a in_port = 'a Queue.t
-  type 'a out_port = 'a Queue.t
-  let new_channel () = (Queue.create (),Queue.create ())
-  let put a q f = atom (fun g -> Queue.add a q; g ()) f
-  let get q f = atom (fun g -> g (Queue.pop q)) f 
-
-
-  let rec doco l f = 
-    match l with 
-      | [] -> f ()
-      | t::q -> fork t (fun () -> doco q f)
+  let run_monade p = round [action_fun p]
 
 end
 
-(*module Instance2 (*: (S with type 'a process = 'a -> action_type -> action_type) problème de signature *) = struct 
-  type 'a m = ('a -> unit) -> unit
-  let bind_m f k = fun c -> f (fun a -> k a c) (* A changer *)
-  let return_m x = fun c -> c x (* A changer *)
-
-  type action_type = 
-    | Atom of action_type m
-    | Fork of action_type*action_type
-    | Stop
-  
-  type 'a inter_process = { todo : ('a -> action_type * 'a) -> action_type * 'a; value : 'a } (* ce sont les process réels *)
-  let action_fun p = p.todo (fun a -> Stop,a)
-  let atom p a = { todo = (fun c -> Atom (bind_m p (fun a -> return_m (c a)))) ; value = a } (* Les process doivent avoir une valeur initiale *)
-  let stop a = { todo = (fun c -> Stop) ; value = a }
-  let par p1 p2 = { todo = (fun c -> Fork (p1.todo c,p2.todo c)) ; value = p1.value } 
-  let fork p c = Fork (action_fun p,c ())
-  let rec round p_list = match p_list with 
-    | [] -> return_m ()
-    | a::a_s -> begin match a with 
-      | Atom a_m -> bind_m a_m (fun a' -> round (List.concat [a_s;[a']]))
-      | Fork (a1,a2) -> round (List.concat [a_s;[a1;a2]])
-      | Stop -> round a_s
-    end 
-  let run_monade p = round [action_fun p] (* A modifier *)
-
-  (* let run p a = let f = run_monade p in f (fun () -> ()); a *)
-
-  let rec doco_inter l f = 
-    match l with 
-      | [] -> f ()
-      | t::q -> fork (fst t) (fun () -> doco_inter q f)
-
-  (* A finir (Mutex ?) *)
-  type 'a process = 'a inter_process * 'a
+module Version_Sequentielle_sans_Mutex : (S with type 'a process = ('a -> unit) -> unit) = struct 
+  type 'a process = ('a -> unit) -> unit
   type 'a in_port = 'a Queue.t
   type 'a out_port = 'a Queue.t
+
+  let new_channel () :'a in_port * 'a out_port = (Queue.create (),Queue.create ())
+  let put (a:'a) (q:'a out_port) (c:unit -> unit) = c (Queue.add a q)
+  let get (q:'a in_port) (c:'a -> unit) = c (Queue.pop q) 
+
+  let rec doco (l:unit process list)  (c:unit -> unit) = 
+    match l with 
+      | [] -> c ()
+      | t::q -> t (fun () -> doco q c)
+
+  let return (x:'a) (c:'a -> unit) = c x
+  let bind (p1:'a process) (fp2:'a -> 'b process) (c: 'b -> unit) = p1 (fun a -> (fp2 a) c)
+
+  let run (p:'a process) = 
+    let result = ref(None) in 
+    let c = (fun a -> result:= Some a) in p c;
+    match !result with 
+      | None -> assert false
+      | Some a -> a 
+
+end
+
+
+module Mutex = struct
+  type t = Locked | Unlocked
+  let create () = let m = ref Unlocked in m
+  let lock (m: t ref) =
+    match !m with
+    | Unlocked -> ignore(m := Locked)
+    | Locked -> failwith "Mutex already locked"
+              
+  let unlock (m :t ref) =
+    match !m with
+    | Locked -> ignore(m := Unlocked)
+    | _ -> failwith "Mutex already unlocked"
+end
+
+module Version_Sequentielle : (S with type 'a process = ('a -> unit) -> unit) = struct 
+  type 'a process = ('a -> unit) -> unit
+  type 'a channel = { fd_out: Unix.file_descr;
+                      fd_in: Unix.file_descr;
+                      m: Mutex.t ref; }
+  type 'a in_port = 'a channel
+  type 'a out_port = 'a channel
+
+  let new_channel () :'a in_port * 'a out_port = 
+    let my_pipe = Unix.pipe () in
+    let channel = { fd_out = snd my_pipe;
+                    fd_in = fst my_pipe;
+                    m = Mutex.create (); } in
+    channel, channel
   
-  let new_channel () = (Queue.create (),Queue.create ())
-  let put a q = (fun f -> atom (fun g -> Queue.add a q; g ()) f), ()
-  let get q = let a = Queue.pop q in (fun f -> atom (fun g -> g a) f), a
+  let put (a:'a) (q:'a out_port) (c:unit -> unit) = 
+    c (Mutex.lock q.m;
+      let out_chan = Unix.out_channel_of_descr q.fd_out in
+      Marshal.to_channel out_chan a [];
+      Mutex.unlock q.m)
+  let rec get (q:'a in_port) (c:'a -> unit) = 
+    let in_chan = Unix.in_channel_of_descr q.fd_in in
+      try
+        c (
+          Mutex.lock q.m;
+          let value = Marshal.from_channel in_chan in
+          Mutex.unlock q.m; value)
+      with End_of_file ->
+        Mutex.unlock q.m;
+        get q c  
 
-  let doco l = (fun f -> doco_inter l f), ()
+  let rec doco (l:unit process list)  (c:unit -> unit) = 
+    match l with 
+      | [] -> c ()
+      | t::q -> t (fun () -> doco q c)
 
-  let return (a:'a) = (fun (c:('a -> action_type)) -> Stop), a
-  let bind (p:'a process) (f:'a -> 'b process) = run_monade (fst p)
-end*)
+  let return (x:'a) (c:'a -> unit) = c x
+  let bind (p1:'a process) (fp2:'a -> 'b process) (c: 'b -> unit) = p1 (fun a -> (fp2 a) c)
+
+  let run (p:'a process) = 
+    let result = ref(None) in 
+    let c = (fun a -> result:= Some a) in p c;
+    match !result with 
+      | None -> assert false
+      | Some a -> a 
+
+end

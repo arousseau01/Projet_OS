@@ -56,7 +56,7 @@ module Version_Unix :S = struct
     (* Initiation d'un client *)
     
     let fd = Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
-    Unix.connect fd1 sockaddr;
+    Unix.connect fd sockaddr;
 
     (* Connection du client *)
 
