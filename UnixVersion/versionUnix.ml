@@ -11,7 +11,6 @@ module type S = sig
   val run: 'a process -> 'a
 end
 
-
 module Mutex = struct
   type t = Locked | Unlocked
   let create () = let m = ref Unlocked in m
@@ -78,4 +77,3 @@ module Version_Unix :S = struct
 
   let run p = p ()
 end
-
