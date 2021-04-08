@@ -11,61 +11,6 @@ module type S = sig
   val run: 'a process -> 'a
 end
 
-module Monad = struct (* Inutile mais a servi à comprendre l'article *)
-  type 'a m = ('a -> unit) -> unit
-  let bind f k = fun c -> f (fun a -> k a c)
-  let return x = fun c -> c x
-
-  type action_type = 
-    | Atom of action_type m
-    | Fork of action_type * action_type
-    | Stop
-  
-  type 'a process = ('a -> action_type) -> action_type 
-  let action_fun p = p (fun a -> Stop)
-  let atom p c = Atom (bind p (fun a -> return (c a)))
-  let stop c = Stop
-  let par p1 p2 (c:'a -> action_type) = Fork (p1 c,p2 c) 
-  let fork p c = Fork (action_fun p,c ())
-  let rec round p_list = match p_list with 
-    | [] -> return ()
-    | a::a_s -> begin match a with 
-      | Atom a_m -> bind a_m ( fun a' -> round (List.concat [a_s;[a']]) )
-      | Fork (a1,a2) -> round (List.concat [a_s;[a1;a2]])
-      | Stop -> round a_s
-    end 
-
-  let run_monade p = round [action_fun p]
-
-end
-
-module Version_Sequentielle_sans_Mutex : (S with type 'a process = ('a -> unit) -> unit) = struct 
-  type 'a process = ('a -> unit) -> unit
-  type 'a in_port = 'a Queue.t
-  type 'a out_port = 'a Queue.t
-
-  let new_channel () :'a in_port * 'a out_port = (Queue.create (),Queue.create ())
-  let put (a:'a) (q:'a out_port) (c:unit -> unit) = c (Queue.add a q)
-  let get (q:'a in_port) (c:'a -> unit) = c (Queue.pop q) 
-
-  let rec doco (l:unit process list)  (c:unit -> unit) = 
-    match l with 
-      | [] -> c ()
-      | t::q -> t (fun () -> doco q c)
-
-  let return (x:'a) (c:'a -> unit) = c x
-  let bind (p1:'a process) (fp2:'a -> 'b process) (c: 'b -> unit) = p1 (fun a -> (fp2 a) c)
-
-  let run (p:'a process) = 
-    let result = ref(None) in 
-    let c = (fun a -> result:= Some a) in p c;
-    match !result with 
-      | None -> assert false
-      | Some a -> a 
-
-end
-
-
 module Mutex = struct
   type t = Locked | Unlocked
   let create () = let m = ref Unlocked in m
@@ -127,3 +72,34 @@ module Version_Sequentielle : (S with type 'a process = ('a -> unit) -> unit) = 
       | Some a -> a 
 
 end
+module Lib (K : S) = struct
+  let ( >>= ) x f = K.bind x f
+  let delay f x =
+    (K.return ()) >>= (fun () -> K.return (f x))
+end
+
+module Example (K : S) = struct
+  
+  module Lib = Lib(K)
+  open Lib
+     
+  let integers (qo : int K.out_port) : unit K.process = 
+    let rec loop n =
+      (Printf.printf "%d\n" n;K.put n qo) >>= (fun () -> loop (n + 1))
+    in
+    loop 2
+    
+  let output (qi : int K.in_port) : unit K.process =
+    let rec loop () =
+      (K.get qi) >>= (fun v -> Format.printf "%d@." v; loop ())
+    in
+    loop ()
+    
+  let main : unit K.process =
+    (delay K.new_channel ()) >>=
+      (fun (q_in, q_out) -> K.doco [ integers q_out ; output q_in ; ])
+end
+
+module Test = Example(Version_Sequentielle);;
+
+Version_Sequentielle.run Test.main;;
