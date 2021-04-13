@@ -1,22 +1,15 @@
-OCAMLBUILD= ocamlbuild \
-		-no-links -classic-display \
-		-libs str,unix \
-		-tags debug,annot
+OCAMLC = ocamlc
+
+OCAMLFLAGS += unix.cma
 
 MAIN=testUnix
-TARGET=native
 
 all: $(MAIN)
 
-$(MAIN): $(MAIN).$(TARGET)
-	cp _build/$(MAIN).$(TARGET) $(MAIN)
+$(MAIN): $(MAIN).ml
 
-$(MAIN).$(TARGET):
-	$(OCAMLBUILD) $(MAIN).$(TARGET)
-
-
-clean:
-	ocamlbuild -clean
+	$(OCAMLC) $(OCAMLFLAGS) -o $@ $^
+	
 
 realclean: clean
 	rm -f *~ $(MAIN)
