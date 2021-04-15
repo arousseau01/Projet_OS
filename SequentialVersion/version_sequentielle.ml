@@ -48,13 +48,14 @@ module Version_Sequentielle_sans_Mutex : (S with type 'a process = ('a -> unit) 
   let put (a:'a) (q:'a out_port) (c:unit -> unit) = c (Queue.add a q)
   let get (q:'a in_port) (c:'a -> unit) = c (Queue.pop q) 
 
+
   let rec doco (l:unit process list)  (c:unit -> unit) = 
     match l with 
       | [] -> c ()
-      | t::q -> t (fun () -> doco q c)
+      | t::q -> ()
 
-  let return (x:'a) (c:'a -> unit) = c x
   let bind (p1:'a process) (fp2:'a -> 'b process) (c: 'b -> unit) = p1 (fun a -> (fp2 a) c)
+  let return (x:'a) (c:'a -> unit) = c x
 
   let run (p:'a process) = 
     let result = ref(None) in 
