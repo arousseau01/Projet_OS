@@ -14,30 +14,15 @@ module type S = sig
 end
 
 
-module Mutex = struct
-  type t = Locked | Unlocked
-  let create () = let m = ref Unlocked in m
-  let lock (m: t ref) =
-    match !m with
-    | Unlocked -> ignore(m := Locked)
-    | Locked -> failwith "Mutex already locked"
-              
-  let unlock (m :t ref) =
-    match !m with
-    | Locked -> ignore(m := Unlocked)
-    | _ -> failwith "Mutex already unlocked"
-end
-
 module Version_Unix :S = struct
 
 (* open Marshal
-   * open Mutex
    * open Unix *)
   
   type 'a process = (unit -> 'a)
-  type 'a channel = { fd_out: Unix.file_descr;
-                      fd_in: Unix.file_descr;
-                      m: Mutex.t ref; }
+
+  type 'a channel = { chan_out: out_channel;
+                      chan_in: in_channel; }
   type 'a in_port = 'a channel
   type 'a out_port = 'a channel
 
@@ -45,37 +30,32 @@ module Version_Unix :S = struct
 
   let run p = p ()
 
-  let bind p f =
-    (fun () -> f (run p) ())
- 
+  let bind p f = (fun () -> f (run p) ())
+
   let new_channel () =
     let my_pipe = Unix.pipe () in
-    let channel = { fd_out = snd my_pipe;
-                    fd_in = fst my_pipe;
-                    m = Mutex.create (); } in
+    let channel = { chan_out = Unix.out_channel_of_descr (snd my_pipe);
+                    chan_in = Unix.in_channel_of_descr (fst my_pipe); } in
     channel, channel
   
   let put value channel = 
+    let out_chan =  channel.chan_out in
     (fun () ->
-      Mutex.lock channel.m;
-      let out_chan = Unix.out_channel_of_descr channel.fd_out in
-      Marshal.to_channel out_chan value [Marshal.Closures];
+      Marshal.to_channel out_chan value [];
       flush out_chan;
-      Mutex.unlock channel.m
     )
+
   let get channel =
     (fun () ->
-      let in_chan = Unix.in_channel_of_descr channel.fd_in in
-      let rec next chan mutex = 
-        try
-          Mutex.lock mutex;
-          let value = Marshal.from_channel chan in
-          Mutex.unlock mutex; value
-        with End_of_file ->
-          Mutex.unlock mutex;
-          next chan mutex
-          in
-        next in_chan channel.m
+      let rec next chan = 
+        begin
+          try
+            let value = Marshal.from_channel chan  in
+            value 
+          with End_of_file -> next chan 
+        end
+      in
+      next channel.chan_in
     )
 
   let rec doco l =
@@ -83,16 +63,16 @@ module Version_Unix :S = struct
       let rec next l =
         match l with 
           | [] -> ()
-          | [t] -> run t
           | t::q ->  begin 
             match Unix.fork () with 
               | 0 -> run t ; exit 0
-              | _ -> next q 
+              | pid -> 
+              next q ; 
+              ignore (Unix.wait ())
             end
       in
       next l
     )
-  
 end
 
 
@@ -116,7 +96,7 @@ module Example (K : S) = struct
     
   let output (qi : int K.in_port) : unit K.process =
     let rec loop () =
-      (K.get qi) >>= (fun v -> Format.printf "%d@." v; loop ())
+      (K.get qi) >>= (fun v -> Format.printf "%d\n" v; loop ())
     in
     loop ()
     
