@@ -8,4 +8,4 @@
 - MpiVersion: implémentation utilisant l'API de MPI (OCaml)
 ### Implémentation de MPI
 - MPI_Kahn : implémentation de MPI utilisant l'implémentation UnixVersion (OCaml)
-- MPI_Kahn_C : implémentation de utilisant une implémentation de KPN en C (C)
+- MPI_Kahn_C : implémentation de MPI utilisant une implémentation de KPN en C (C)
