@@ -22,4 +22,4 @@ test_pi: test_pi.o kahn.o mpi_subset.o
 	$(CC) -o $@ $^ $(CFLAGS)
 
 clean: 
-	rm test test_hello.o kahn.o mpi_subset.o
+	rm test_hello test_hello.o kahn.o mpi_subset.o test_pi test_pi.o

@@ -8,7 +8,7 @@
 
 #include "kahn.h"
 
-// #define DEBUG
+//#define DEBUG
 
 channel *new_channel() {
    channel *chan = (channel*) malloc(sizeof(channel));
@@ -19,31 +19,31 @@ channel *new_channel() {
     return chan;
     }
 
-void put_int(int n, channel *chan) {
-    write(chan->fd_in, &n, sizeof(int));
-    }
-
-int get_int(channel *chan) {
-    int res;
-    while(read(chan->fd_out, &res, sizeof(int)) == 0) {};
-    return res;
-    }
-
-void put_double(double x,channel *chan) {
+void put(void *value, channel *chan, Kahn_Datatype dtype) 
+{
 #ifdef DEBUG
-    printf("kahn.c : put_double, value = %g\n", x);
+    printf("Kahn::put ; dtype = %d, size_value = %d\n", dtype, _kahn_data_size[dtype]);
 #endif
-    write(chan->fd_in, &x, sizeof(double));
-    }
+    write(chan->fd_in, value, _kahn_data_size[dtype]);
+}
 
-double get_double(channel *chan) {
-    double res;
-    while(read(chan->fd_out, &res, sizeof(double)) == 0) {};
+void get(void *value, channel *chan, Kahn_Datatype dtype) 
+{
 #ifdef DEBUG
-    printf("kahn.c : get_double, value = %g\n", res);
+    printf("Kahn::get ; dtype = %d, size_value = %d\n", dtype, _kahn_data_size[dtype]);
 #endif
-    return res;
-    }
+    while(read(chan->fd_out, value, _kahn_data_size[dtype]) == 0) {};
+}
+
+void put_array(void *value, int cnt, channel *chan, Kahn_Datatype dtype) 
+{
+    write(chan->fd_in, value,cnt* _kahn_data_size[dtype]);
+}
+
+void get_array(void *value, int cnt,channel *chan, Kahn_Datatype dtype) 
+{
+    while(read(chan->fd_out, value, cnt* _kahn_data_size[dtype]) == 0) {};
+}
 
 // Prend en entrée une liste de fonction et une liste d'arguments)
 void doco(int nb_proc, process processes[], void **arguments) {

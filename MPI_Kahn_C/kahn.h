@@ -3,12 +3,17 @@
 #ifndef KAHN_INCLUDED
 #define KAHN_INCLUDED
 
-#define BUFFER_SIZE 20000
+typedef enum { 
+    KAHN_INT, 
+    KAHN_DOUBLE,
+    KAHN_LONG_DOUBLE,
+} Kahn_Datatype;
+
+static int _kahn_data_size[] = {4, 8, 16};
 
 typedef void (*process)();
 
-int nb_proc2;
-pid_t *pid_list;
+    pid_t *pid_list;
 
 typedef struct Channel {
     int fd_in;
@@ -17,11 +22,11 @@ typedef struct Channel {
 
 channel *new_channel();
 
-// Communication
-void put_int(int value, channel *chan_out);
-int get_int(channel *chan_in);
-void put_double(double value, channel *chan_out);
-double get_double(channel *chan_in);
+void put(void *value, channel *chan_out, Kahn_Datatype dtype);
+void get(void *value, channel *chan_in, Kahn_Datatype dtype);
+
+void put_array(void *value, int cnt, channel *chan_out, Kahn_Datatype dtype);
+void get_array(void *value, int cnt, channel *chan_in, Kahn_Datatype dtype);
 
 void doco(int nb_proc, process processes[], void* arguments[]);
 

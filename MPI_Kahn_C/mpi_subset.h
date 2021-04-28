@@ -1,8 +1,12 @@
-
 #ifndef MPI_INCLUDED
 #define MPI_INCLUDED
 
-typedef enum MPI_Datatype { MPI_INT = 1, MPI_DOUBLE = 2} MPI_Datatype;
+typedef enum { 
+    MPI_INT, 
+    MPI_DOUBLE,
+    MPI_LONG_DOUBLE
+} MPI_Datatype;
+
 typedef int MPI_Comm;
 typedef struct {
     int MPI_SOURCE;

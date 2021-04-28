@@ -23,7 +23,7 @@ static int _mpi_getargs(int argc, char **argv)
                 _mpi_size = (int)strtol((const char *)*(++argv), NULL, 10);
                 argc--;
                 if (_mpi_size > get_nprocs()) {
-                    printf("There are not enough slots available in the system to satisfy the %d slots that were requested: %d slots available only\n", 
+                    printf("There are not enough slots available in the system to satisfy the %d slots that were requested (%d slots available only)\n", 
                     _mpi_size, get_nprocs());
                     exit(1);
                 } 
@@ -153,34 +153,42 @@ int MPI_Comm_rank(MPI_Comm comm, int *prank)
 
 /* Point-to-point communication */
 
+Kahn_Datatype _khan2mpi_dtype(MPI_Datatype dtype)
+{
+    switch (dtype)
+    {
+    case MPI_INT:
+        return KAHN_INT;
+    case MPI_DOUBLE:
+        return KAHN_DOUBLE;
+    case MPI_LONG_DOUBLE:
+        return KAHN_LONG_DOUBLE;
+    
+    default:
+        return KAHN_INT;
+    }
+}
+
 int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm comm)
 {  
 #ifdef DEBUG
     printf("Mpi_Send : cnt = %d, dest = %d, tag = %d\n", cnt, dest, tag);
 #endif
     assert(_mpi_init);
-    assert(buf != NULL && cnt == 1);
-    assert((dtype == MPI_INT) || (dtype = MPI_DOUBLE));
+    assert(buf != NULL);
     assert(dest >= 0 && dest < _mpi_size && dest != _mpi_rank);
     assert(tag >= 0);
     assert(comm == MPI_COMM_WORLD);
 
     channel *chan = _mpi_channels[dest];
 
-    switch (dtype)
-    {
-    case MPI_INT:
-        put_int(*((int *)buf), chan);
-        break;
-
-    case MPI_DOUBLE:
-        put_double(*((double *)buf), chan);
-        break;
-    
-    default:
-        break;
+    if (cnt == 1) {
+        put(buf, chan, _khan2mpi_dtype(dtype));
+    } else {
+        put_array(buf, cnt, chan, _khan2mpi_dtype(dtype));
     }
 
+    
     return MPI_SUCCESS;
 }
 
@@ -193,8 +201,7 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
 #endif
 
     assert(_mpi_init);
-    assert(buf != NULL && cnt == 1);
-    assert((dtype == MPI_INT) || (dtype = MPI_DOUBLE));
+    assert(buf != NULL);
     assert(src >= 0 && src < _mpi_size && src != _mpi_rank);
     assert(tag >= 0);
     assert(comm == MPI_COMM_WORLD);
@@ -203,28 +210,12 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
     pstat->MPI_SOURCE = src;
     pstat->MPI_ERROR = MPI_SUCCESS;
 
-
-
     channel *chan = _mpi_channels[src];
 
-    int res_int;
-    double res_double;
-
-    switch (dtype)
-    {
-    case MPI_INT:
-        res_int = get_int(chan);
-        *(int *)buf = res_int;
-        break;
-
-    case MPI_DOUBLE:
-        res_double = get_double(chan);
-        *(double *)buf = res_double;
-        break;
-    
-    default:
-        pstat->MPI_ERROR =!MPI_SUCCESS;
-        return !MPI_SUCCESS;
+    if (cnt == 1) {
+        get(buf, chan, _khan2mpi_dtype(dtype));
+    } else {
+        get_array(buf, cnt, chan, _khan2mpi_dtype(dtype));
     }
 
     return MPI_SUCCESS;
