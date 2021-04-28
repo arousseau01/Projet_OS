@@ -1,5 +1,4 @@
 #include <sys/types.h>
-#include <unistd.h>
 
 #ifndef KAHN_INCLUDED
 #define KAHN_INCLUDED

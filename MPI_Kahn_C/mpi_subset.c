@@ -1,5 +1,5 @@
-#include <stdio.h>          // printf
-#include <stdlib.h>         // NULL
+#include <stdio.h>        
+#include <stdlib.h>        
 #include <assert.h>
 #include <errno.h>
 #include <string.h>
@@ -175,7 +175,7 @@ int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm
     return MPI_SUCCESS;
 }
 
-int MPI_Receive_int(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
+int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
  MPI_Comm comm, MPI_Status *pstat)
  {
     assert(_mpi_init);
