@@ -30,12 +30,18 @@ int get_int(channel *chan) {
     }
 
 void put_double(double x,channel *chan) {
+#ifdef DEBUG
+    printf("kahn.c : put_double, value = %g\n", x);
+#endif
     write(chan->fd_in, &x, sizeof(double));
     }
 
 double get_double(channel *chan) {
     double res;
     while(read(chan->fd_out, &res, sizeof(double)) == 0) {};
+#ifdef DEBUG
+    printf("kahn.c : get_double, value = %g\n", res);
+#endif
     return res;
     }
 

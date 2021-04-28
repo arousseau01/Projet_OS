@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/sysinfo.h>
 
 #include "mpi_subset.h"
 #include "kahn.h"
@@ -21,6 +22,11 @@ static int _mpi_getargs(int argc, char **argv)
             if (argc > 1) {
                 _mpi_size = (int)strtol((const char *)*(++argv), NULL, 10);
                 argc--;
+                if (_mpi_size > get_nprocs()) {
+                    printf("There are not enough slots available in the system to satisfy the %d slots that were requested: %d slots available only\n", 
+                    _mpi_size, get_nprocs());
+                    exit(1);
+                } 
             }
         }
     }
@@ -94,7 +100,7 @@ static int _mpi_split()
         processes[i] = _mpi_process;
         _mpi_process_argument *arg = malloc(sizeof(_mpi_process_argument));
         arg->rank = i+1;
-        arg->channels = _mpi_channels_global[i];
+        arg->channels = _mpi_channels_global[i+1];
         args[i] = arg;
     }
     
@@ -149,6 +155,9 @@ int MPI_Comm_rank(MPI_Comm comm, int *prank)
 
 int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm comm)
 {  
+#ifdef DEBUG
+    printf("Mpi_Send : cnt = %d, dest = %d, tag = %d\n", cnt, dest, tag);
+#endif
     assert(_mpi_init);
     assert(buf != NULL && cnt == 1);
     assert((dtype == MPI_INT) || (dtype = MPI_DOUBLE));
@@ -178,6 +187,11 @@ int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm
 int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
  MPI_Comm comm, MPI_Status *pstat)
  {
+
+#ifdef DEBUG
+    printf("Mpi_Receive : cnt = %d, src = %d, tag = %d\n", cnt, src, tag);
+#endif
+
     assert(_mpi_init);
     assert(buf != NULL && cnt == 1);
     assert((dtype == MPI_INT) || (dtype = MPI_DOUBLE));
@@ -189,6 +203,8 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
     pstat->MPI_SOURCE = src;
     pstat->MPI_ERROR = MPI_SUCCESS;
 
+
+
     channel *chan = _mpi_channels[src];
 
     int res_int;
@@ -198,12 +214,12 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
     {
     case MPI_INT:
         res_int = get_int(chan);
-        buf = &res_int;
+        *(int *)buf = res_int;
         break;
 
     case MPI_DOUBLE:
         res_double = get_double(chan);
-        buf = &res_double;
+        *(double *)buf = res_double;
         break;
     
     default:
