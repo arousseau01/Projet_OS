@@ -1,6 +1,6 @@
 # Projet d'implémentation de réseaux de processus de Kahn (KPN)
 
-## Dossiers:
+## Repertoires:
 ### Implémentation de KPN
 - UnixVersion: implémentation basée sur des processus UNIX communiquant via des pipes (OCaml)
 - NetworkVersion: implémentation basée sur des processus UNIX communiquant via des stream sockets (OCaml)
