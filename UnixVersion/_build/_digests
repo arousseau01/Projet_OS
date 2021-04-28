@@ -1,5 +1,0 @@
-"Rule: ocaml dependencies ml (%=testUnix )": "\132(\180\180\176\160\"\165\021Z\1311\173\204\"\001"
-"Resource: /Users/arthur/Documents/Drive Arthur/Travail/L3S2 ENS/Syste\204\128mes d'exploitation/Projet_OS/UnixVersion/testUnix.ml": "\168\252\246\159fZ\246\193_j\025l\240[\196r"
-"Rule: ocaml: ml & cmi -> cmx & o (%=testUnix )": "\"\198#\216\196\236\211{\025971\000\149\231M"
-"Rule: ocaml: cmx* & o* -> native (%=testUnix )": "H\185S\238\223rA\244\166fa>\160>\006\023"
-"Rule: ocaml: ml -> cmo & cmi (%=testUnix )": "/\222\150\190L\234<\005\155C\006p3\176X\218"

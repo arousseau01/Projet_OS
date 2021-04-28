@@ -1,0 +1,10 @@
+### Starting build.
+# Target: test_sequentielle.ml.depends, tags: { annot, debug, extension:ml, file:test_sequentielle.ml, ocaml, ocamldep, quiet }
+/Users/arthur/.opam/default/bin/ocamldep.opt -modules test_sequentielle.ml > test_sequentielle.ml.depends
+# Target: test_sequentielle.cmo, tags: { annot, byte, compile, debug, extension:cmo, extension:ml, file:test_sequentielle.cmo, file:test_sequentielle.ml, implem, ocaml, quiet }
+/Users/arthur/.opam/default/bin/ocamlc.opt -c -g -annot -o test_sequentielle.cmo test_sequentielle.ml
+# Target: test_sequentielle.cmx, tags: { annot, compile, debug, extension:cmx, extension:ml, file:test_sequentielle.cmx, file:test_sequentielle.ml, implem, native, ocaml, quiet }
+/Users/arthur/.opam/default/bin/ocamlopt.opt -c -g -annot -o test_sequentielle.cmx test_sequentielle.ml
+# Target: test_sequentielle.native, tags: { annot, debug, dont_link_with, extension:native, file:test_sequentielle.native, link, native, ocaml, program, quiet }
+/Users/arthur/.opam/default/bin/ocamlopt.opt str.cmxa unix.cmxa -g test_sequentielle.cmx -o test_sequentielle.native
+# Compilation successful.

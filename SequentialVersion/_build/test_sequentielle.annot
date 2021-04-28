@@ -1,0 +1,1460 @@
+"test_sequentielle.ml" 14 377 384 "test_sequentielle.ml" 14 377 386
+ident(
+  def VS "test_sequentielle.ml" 57 1583 1587 "test_sequentielle.ml" 0 0 -1
+)
+"test_sequentielle.ml" 16 403 411 "test_sequentielle.ml" 16 403 423
+type(
+  (unit -> unit) Queue.t
+)
+ident(
+  def process_list "test_sequentielle.ml" 18 468 472 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 16 403 451 "test_sequentielle.ml" 16 403 463
+type(
+  unit -> (unit -> unit) Queue.t
+)
+ident(
+  int_ref Stdlib.Queue.create "queue.mli" 33 1535 1535 "queue.mli" 33 1535 1560
+)
+"test_sequentielle.ml" 16 403 464 "test_sequentielle.ml" 16 403 466
+type(
+  unit
+)
+"test_sequentielle.ml" 16 403 451 "test_sequentielle.ml" 16 403 466
+type(
+  (unit -> unit) Queue.t
+)
+"test_sequentielle.ml" 18 468 476 "test_sequentielle.ml" 18 468 483
+type(
+  unit -> unit
+)
+ident(
+  def suivant "test_sequentielle.ml" 22 574 578 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 18 468 484 "test_sequentielle.ml" 18 468 486
+type(
+  unit
+)
+"test_sequentielle.ml" 19 489 497 "test_sequentielle.ml" 19 489 511
+type(
+  (unit -> unit) Queue.t -> bool
+)
+ident(
+  int_ref Stdlib.Queue.is_empty "queue.mli" 72 2676 2676 "queue.mli" 72 2676 2703
+)
+"test_sequentielle.ml" 19 489 512 "test_sequentielle.ml" 19 489 524
+type(
+  (unit -> unit) Queue.t
+)
+ident(
+  int_ref process_list "test_sequentielle.ml" 16 403 411 "test_sequentielle.ml" 16 403 423
+)
+"test_sequentielle.ml" 19 489 497 "test_sequentielle.ml" 19 489 524
+type(
+  bool
+)
+"test_sequentielle.ml" 20 525 535 "test_sequentielle.ml" 20 525 537
+type(
+  unit
+)
+"test_sequentielle.ml" 21 538 548 "test_sequentielle.ml" 21 538 557
+type(
+  (unit -> unit) Queue.t -> unit -> unit
+)
+ident(
+  int_ref Stdlib.Queue.pop "queue.mli" 51 2073 2073 "queue.mli" 51 2073 2093
+)
+"test_sequentielle.ml" 21 538 558 "test_sequentielle.ml" 21 538 570
+type(
+  (unit -> unit) Queue.t
+)
+ident(
+  int_ref process_list "test_sequentielle.ml" 16 403 411 "test_sequentielle.ml" 16 403 423
+)
+"test_sequentielle.ml" 21 538 571 "test_sequentielle.ml" 21 538 573
+type(
+  unit
+)
+"test_sequentielle.ml" 21 538 548 "test_sequentielle.ml" 21 538 573
+type(
+  unit
+)
+"test_sequentielle.ml" 19 489 494 "test_sequentielle.ml" 21 538 573
+type(
+  unit
+)
+"test_sequentielle.ml" 22 574 582 "test_sequentielle.ml" 22 574 585
+type(
+  (unit -> unit) -> unit
+)
+ident(
+  def add "test_sequentielle.ml" 24 617 621 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 22 574 586 "test_sequentielle.ml" 22 574 587
+type(
+  unit -> unit
+)
+ident(
+  def c "test_sequentielle.ml" 22 574 590 "test_sequentielle.ml" 22 574 615
+)
+"test_sequentielle.ml" 22 574 590 "test_sequentielle.ml" 22 574 600
+type(
+  (unit -> unit) -> (unit -> unit) Queue.t -> unit
+)
+ident(
+  int_ref Stdlib.Queue.push "queue.mli" 39 1703 1703 "queue.mli" 39 1703 1732
+)
+"test_sequentielle.ml" 22 574 601 "test_sequentielle.ml" 22 574 602
+type(
+  unit -> unit
+)
+ident(
+  int_ref c "test_sequentielle.ml" 22 574 586 "test_sequentielle.ml" 22 574 587
+)
+"test_sequentielle.ml" 22 574 603 "test_sequentielle.ml" 22 574 615
+type(
+  (unit -> unit) Queue.t
+)
+ident(
+  int_ref process_list "test_sequentielle.ml" 16 403 411 "test_sequentielle.ml" 16 403 423
+)
+"test_sequentielle.ml" 22 574 590 "test_sequentielle.ml" 22 574 615
+type(
+  unit
+)
+"test_sequentielle.ml" 28 728 736 "test_sequentielle.ml" 28 728 747
+type(
+  unit -> 'a Queue.t * 'a Queue.t
+)
+ident(
+  def new_channel "test_sequentielle.ml" 31 794 798 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 28 728 748 "test_sequentielle.ml" 28 728 750
+type(
+  unit
+)
+"test_sequentielle.ml" 29 753 763 "test_sequentielle.ml" 29 753 764
+type(
+  'a Queue.t
+)
+ident(
+  def q "test_sequentielle.ml" 29 753 786 "test_sequentielle.ml" 29 753 792
+)
+"test_sequentielle.ml" 29 753 767 "test_sequentielle.ml" 29 753 779
+type(
+  unit -> 'a Queue.t
+)
+ident(
+  int_ref Stdlib.Queue.create "queue.mli" 33 1535 1535 "queue.mli" 33 1535 1560
+)
+"test_sequentielle.ml" 29 753 780 "test_sequentielle.ml" 29 753 782
+type(
+  unit
+)
+"test_sequentielle.ml" 29 753 767 "test_sequentielle.ml" 29 753 782
+type(
+  'a Queue.t
+)
+"test_sequentielle.ml" 29 753 787 "test_sequentielle.ml" 29 753 788
+type(
+  'a Queue.t
+)
+ident(
+  int_ref q "test_sequentielle.ml" 29 753 763 "test_sequentielle.ml" 29 753 764
+)
+"test_sequentielle.ml" 29 753 790 "test_sequentielle.ml" 29 753 791
+type(
+  'a Queue.t
+)
+ident(
+  int_ref q "test_sequentielle.ml" 29 753 763 "test_sequentielle.ml" 29 753 764
+)
+"test_sequentielle.ml" 29 753 786 "test_sequentielle.ml" 29 753 792
+type(
+  'a Queue.t * 'a Queue.t
+)
+"test_sequentielle.ml" 29 753 759 "test_sequentielle.ml" 29 753 792
+type(
+  'a Queue.t * 'a Queue.t
+)
+"test_sequentielle.ml" 31 794 802 "test_sequentielle.ml" 31 794 805
+type(
+  'a0 -> 'a0 out_port -> (unit -> unit) -> unit
+)
+ident(
+  def put "test_sequentielle.ml" 35 917 921 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 31 794 807 "test_sequentielle.ml" 31 794 808
+type(
+  'a0
+)
+type(
+  'a0
+)
+ident(
+  def a "test_sequentielle.ml" 31 794 815 "test_sequentielle.ml" 33 899 915
+)
+"test_sequentielle.ml" 31 794 816 "test_sequentielle.ml" 31 794 817
+type(
+  'a0 out_port
+)
+type(
+  'a0 out_port
+)
+ident(
+  def q "test_sequentielle.ml" 31 794 833 "test_sequentielle.ml" 33 899 915
+)
+"test_sequentielle.ml" 31 794 834 "test_sequentielle.ml" 31 794 835
+type(
+  unit -> unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def c "test_sequentielle.ml" 32 854 860 "test_sequentielle.ml" 33 899 915
+)
+"test_sequentielle.ml" 32 854 860 "test_sequentielle.ml" 32 854 863
+type(
+  (unit -> unit) -> unit
+)
+ident(
+  int_ref add "test_sequentielle.ml" 22 574 582 "test_sequentielle.ml" 22 574 585
+)
+"test_sequentielle.ml" 32 854 869 "test_sequentielle.ml" 32 854 871
+type(
+  unit
+)
+"test_sequentielle.ml" 32 854 875 "test_sequentielle.ml" 32 854 885
+type(
+  'a0 -> 'a0 Queue.t -> unit
+)
+ident(
+  int_ref Stdlib.Queue.push "queue.mli" 39 1703 1703 "queue.mli" 39 1703 1732
+)
+"test_sequentielle.ml" 32 854 886 "test_sequentielle.ml" 32 854 887
+type(
+  'a0
+)
+ident(
+  int_ref a "test_sequentielle.ml" 31 794 807 "test_sequentielle.ml" 31 794 808
+)
+"test_sequentielle.ml" 32 854 888 "test_sequentielle.ml" 32 854 889
+type(
+  'a0 out_port
+)
+ident(
+  int_ref q "test_sequentielle.ml" 31 794 816 "test_sequentielle.ml" 31 794 817
+)
+"test_sequentielle.ml" 32 854 875 "test_sequentielle.ml" 32 854 889
+type(
+  unit
+)
+"test_sequentielle.ml" 32 854 891 "test_sequentielle.ml" 32 854 892
+type(
+  unit -> unit
+)
+ident(
+  int_ref c "test_sequentielle.ml" 31 794 834 "test_sequentielle.ml" 31 794 835
+)
+"test_sequentielle.ml" 32 854 893 "test_sequentielle.ml" 32 854 895
+type(
+  unit
+)
+"test_sequentielle.ml" 32 854 891 "test_sequentielle.ml" 32 854 895
+type(
+  unit
+)
+"test_sequentielle.ml" 32 854 875 "test_sequentielle.ml" 32 854 895
+type(
+  unit
+)
+"test_sequentielle.ml" 32 854 864 "test_sequentielle.ml" 32 854 896
+type(
+  unit -> unit
+)
+"test_sequentielle.ml" 32 854 860 "test_sequentielle.ml" 32 854 896
+type(
+  unit
+)
+"test_sequentielle.ml" 33 899 905 "test_sequentielle.ml" 33 899 912
+type(
+  unit -> unit
+)
+ident(
+  int_ref suivant "test_sequentielle.ml" 18 468 476 "test_sequentielle.ml" 18 468 483
+)
+"test_sequentielle.ml" 33 899 913 "test_sequentielle.ml" 33 899 915
+type(
+  unit
+)
+"test_sequentielle.ml" 33 899 905 "test_sequentielle.ml" 33 899 915
+type(
+  unit
+)
+"test_sequentielle.ml" 32 854 860 "test_sequentielle.ml" 33 899 915
+type(
+  unit
+)
+"test_sequentielle.ml" 35 917 929 "test_sequentielle.ml" 35 917 932
+type(
+  'a1 in_port -> ('a1 -> unit) -> unit
+)
+ident(
+  def get "test_sequentielle.ml" 35 917 921 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 35 917 934 "test_sequentielle.ml" 35 917 935
+type(
+  'a1 in_port
+)
+type(
+  'a1 in_port
+)
+ident(
+  def q "test_sequentielle.ml" 35 917 950 "test_sequentielle.ml" 41 1080 1096
+)
+"test_sequentielle.ml" 35 917 951 "test_sequentielle.ml" 35 917 952
+type(
+  'a1 -> unit
+)
+type(
+  'a1 -> unit
+)
+ident(
+  def c "test_sequentielle.ml" 36 969 974 "test_sequentielle.ml" 41 1080 1096
+)
+"test_sequentielle.ml" 36 969 974 "test_sequentielle.ml" 36 969 977
+type(
+  (unit -> unit) -> unit
+)
+ident(
+  int_ref add "test_sequentielle.ml" 22 574 582 "test_sequentielle.ml" 22 574 585
+)
+"test_sequentielle.ml" 37 978 990 "test_sequentielle.ml" 37 978 992
+type(
+  unit
+)
+"test_sequentielle.ml" 38 996 1008 "test_sequentielle.ml" 38 996 1022
+type(
+  'a1 Queue.t -> bool
+)
+ident(
+  int_ref Stdlib.Queue.is_empty "queue.mli" 72 2676 2676 "queue.mli" 72 2676 2703
+)
+"test_sequentielle.ml" 38 996 1023 "test_sequentielle.ml" 38 996 1024
+type(
+  'a1 in_port
+)
+ident(
+  int_ref q "test_sequentielle.ml" 35 917 934 "test_sequentielle.ml" 35 917 935
+)
+"test_sequentielle.ml" 38 996 1008 "test_sequentielle.ml" 38 996 1024
+type(
+  bool
+)
+"test_sequentielle.ml" 39 1025 1039 "test_sequentielle.ml" 39 1025 1042
+type(
+  'a1 in_port -> ('a1 -> unit) -> unit
+)
+ident(
+  int_ref get "test_sequentielle.ml" 35 917 929 "test_sequentielle.ml" 35 917 932
+)
+"test_sequentielle.ml" 39 1025 1043 "test_sequentielle.ml" 39 1025 1044
+type(
+  'a1 in_port
+)
+ident(
+  int_ref q "test_sequentielle.ml" 35 917 934 "test_sequentielle.ml" 35 917 935
+)
+"test_sequentielle.ml" 39 1025 1045 "test_sequentielle.ml" 39 1025 1046
+type(
+  'a1 -> unit
+)
+ident(
+  int_ref c "test_sequentielle.ml" 35 917 951 "test_sequentielle.ml" 35 917 952
+)
+"test_sequentielle.ml" 39 1025 1039 "test_sequentielle.ml" 39 1025 1046
+type(
+  unit
+)
+"test_sequentielle.ml" 40 1047 1061 "test_sequentielle.ml" 40 1047 1062
+type(
+  'a1 -> unit
+)
+ident(
+  int_ref c "test_sequentielle.ml" 35 917 951 "test_sequentielle.ml" 35 917 952
+)
+"test_sequentielle.ml" 40 1047 1064 "test_sequentielle.ml" 40 1047 1073
+type(
+  'a1 Queue.t -> 'a1
+)
+ident(
+  int_ref Stdlib.Queue.pop "queue.mli" 51 2073 2073 "queue.mli" 51 2073 2093
+)
+"test_sequentielle.ml" 40 1047 1074 "test_sequentielle.ml" 40 1047 1075
+type(
+  'a1 in_port
+)
+ident(
+  int_ref q "test_sequentielle.ml" 35 917 934 "test_sequentielle.ml" 35 917 935
+)
+"test_sequentielle.ml" 40 1047 1063 "test_sequentielle.ml" 40 1047 1076
+type(
+  'a1
+)
+"test_sequentielle.ml" 40 1047 1061 "test_sequentielle.ml" 40 1047 1076
+type(
+  unit
+)
+"test_sequentielle.ml" 38 996 1005 "test_sequentielle.ml" 40 1047 1076
+type(
+  unit
+)
+"test_sequentielle.ml" 37 978 985 "test_sequentielle.ml" 40 1047 1077
+type(
+  unit -> unit
+)
+"test_sequentielle.ml" 36 969 974 "test_sequentielle.ml" 40 1047 1077
+type(
+  unit
+)
+"test_sequentielle.ml" 41 1080 1086 "test_sequentielle.ml" 41 1080 1093
+type(
+  unit -> unit
+)
+ident(
+  int_ref suivant "test_sequentielle.ml" 18 468 476 "test_sequentielle.ml" 18 468 483
+)
+"test_sequentielle.ml" 41 1080 1094 "test_sequentielle.ml" 41 1080 1096
+type(
+  unit
+)
+"test_sequentielle.ml" 41 1080 1086 "test_sequentielle.ml" 41 1080 1096
+type(
+  unit
+)
+"test_sequentielle.ml" 36 969 974 "test_sequentielle.ml" 41 1080 1096
+type(
+  unit
+)
+"test_sequentielle.ml" 43 1098 1110 "test_sequentielle.ml" 43 1098 1114
+type(
+  unit process list -> (unit -> unit) -> unit
+)
+ident(
+  def doco "test_sequentielle.ml" 43 1098 1102 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 43 1098 1116 "test_sequentielle.ml" 43 1098 1117
+type(
+  unit process list
+)
+type(
+  unit process list
+)
+ident(
+  def l "test_sequentielle.ml" 43 1098 1139 "test_sequentielle.ml" 45 1204 1255
+)
+"test_sequentielle.ml" 43 1098 1140 "test_sequentielle.ml" 43 1098 1141
+type(
+  unit -> unit
+)
+type(
+  unit -> unit
+)
+ident(
+  def c "test_sequentielle.ml" 43 1098 1160 "test_sequentielle.ml" 45 1204 1255
+)
+"test_sequentielle.ml" 43 1098 1166 "test_sequentielle.ml" 43 1098 1167
+type(
+  unit process list
+)
+ident(
+  int_ref l "test_sequentielle.ml" 43 1098 1116 "test_sequentielle.ml" 43 1098 1117
+)
+"test_sequentielle.ml" 44 1173 1181 "test_sequentielle.ml" 44 1173 1183
+type(
+  unit process list
+)
+type(
+  unit process list
+)
+"test_sequentielle.ml" 44 1173 1187 "test_sequentielle.ml" 44 1173 1194
+type(
+  unit -> unit
+)
+ident(
+  int_ref suivant "test_sequentielle.ml" 18 468 476 "test_sequentielle.ml" 18 468 483
+)
+"test_sequentielle.ml" 44 1173 1195 "test_sequentielle.ml" 44 1173 1197
+type(
+  unit
+)
+"test_sequentielle.ml" 44 1173 1187 "test_sequentielle.ml" 44 1173 1197
+type(
+  unit
+)
+"test_sequentielle.ml" 44 1173 1199 "test_sequentielle.ml" 44 1173 1200
+type(
+  unit -> unit
+)
+ident(
+  int_ref c "test_sequentielle.ml" 43 1098 1140 "test_sequentielle.ml" 43 1098 1141
+)
+"test_sequentielle.ml" 44 1173 1201 "test_sequentielle.ml" 44 1173 1203
+type(
+  unit
+)
+"test_sequentielle.ml" 44 1173 1199 "test_sequentielle.ml" 44 1173 1203
+type(
+  unit
+)
+"test_sequentielle.ml" 44 1173 1187 "test_sequentielle.ml" 44 1173 1203
+type(
+  unit
+)
+"test_sequentielle.ml" 45 1204 1212 "test_sequentielle.ml" 45 1204 1213
+type(
+  unit process
+)
+ident(
+  def p "test_sequentielle.ml" 45 1204 1220 "test_sequentielle.ml" 45 1204 1255
+)
+"test_sequentielle.ml" 45 1204 1215 "test_sequentielle.ml" 45 1204 1216
+type(
+  unit process list
+)
+ident(
+  def q "test_sequentielle.ml" 45 1204 1220 "test_sequentielle.ml" 45 1204 1255
+)
+"test_sequentielle.ml" 45 1204 1212 "test_sequentielle.ml" 45 1204 1216
+type(
+  unit process list
+)
+type(
+  unit process list
+)
+"test_sequentielle.ml" 45 1204 1220 "test_sequentielle.ml" 45 1204 1223
+type(
+  (unit -> unit) -> unit
+)
+ident(
+  int_ref add "test_sequentielle.ml" 22 574 582 "test_sequentielle.ml" 22 574 585
+)
+"test_sequentielle.ml" 45 1204 1229 "test_sequentielle.ml" 45 1204 1231
+type(
+  unit
+)
+"test_sequentielle.ml" 45 1204 1235 "test_sequentielle.ml" 45 1204 1236
+type(
+  unit process
+)
+ident(
+  int_ref p "test_sequentielle.ml" 45 1204 1212 "test_sequentielle.ml" 45 1204 1213
+)
+"test_sequentielle.ml" 45 1204 1237 "test_sequentielle.ml" 45 1204 1244
+type(
+  unit -> unit
+)
+ident(
+  int_ref suivant "test_sequentielle.ml" 18 468 476 "test_sequentielle.ml" 18 468 483
+)
+"test_sequentielle.ml" 45 1204 1235 "test_sequentielle.ml" 45 1204 1244
+type(
+  unit
+)
+"test_sequentielle.ml" 45 1204 1224 "test_sequentielle.ml" 45 1204 1245
+type(
+  unit -> unit
+)
+"test_sequentielle.ml" 45 1204 1220 "test_sequentielle.ml" 45 1204 1245
+type(
+  unit
+)
+"test_sequentielle.ml" 45 1204 1247 "test_sequentielle.ml" 45 1204 1251
+type(
+  unit process list -> (unit -> unit) -> unit
+)
+ident(
+  int_ref doco "test_sequentielle.ml" 43 1098 1110 "test_sequentielle.ml" 43 1098 1114
+)
+"test_sequentielle.ml" 45 1204 1252 "test_sequentielle.ml" 45 1204 1253
+type(
+  unit process list
+)
+ident(
+  int_ref q "test_sequentielle.ml" 45 1204 1215 "test_sequentielle.ml" 45 1204 1216
+)
+"test_sequentielle.ml" 45 1204 1254 "test_sequentielle.ml" 45 1204 1255
+type(
+  unit -> unit
+)
+ident(
+  int_ref c "test_sequentielle.ml" 43 1098 1140 "test_sequentielle.ml" 43 1098 1141
+)
+"test_sequentielle.ml" 45 1204 1247 "test_sequentielle.ml" 45 1204 1255
+type(
+  unit
+)
+"test_sequentielle.ml" 45 1204 1220 "test_sequentielle.ml" 45 1204 1255
+type(
+  unit
+)
+"test_sequentielle.ml" 43 1098 1160 "test_sequentielle.ml" 45 1204 1255
+type(
+  unit
+)
+"test_sequentielle.ml" 47 1257 1265 "test_sequentielle.ml" 47 1257 1271
+type(
+  'b -> ('b -> 'c) -> 'c
+)
+ident(
+  def return "test_sequentielle.ml" 48 1291 1295 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 47 1257 1272 "test_sequentielle.ml" 47 1257 1273
+type(
+  'b
+)
+ident(
+  def a "test_sequentielle.ml" 47 1257 1276 "test_sequentielle.ml" 47 1257 1290
+)
+"test_sequentielle.ml" 47 1257 1281 "test_sequentielle.ml" 47 1257 1282
+type(
+  'b -> 'c
+)
+ident(
+  def f "test_sequentielle.ml" 47 1257 1286 "test_sequentielle.ml" 47 1257 1289
+)
+"test_sequentielle.ml" 47 1257 1286 "test_sequentielle.ml" 47 1257 1287
+type(
+  'b -> 'c
+)
+ident(
+  int_ref f "test_sequentielle.ml" 47 1257 1281 "test_sequentielle.ml" 47 1257 1282
+)
+"test_sequentielle.ml" 47 1257 1288 "test_sequentielle.ml" 47 1257 1289
+type(
+  'b
+)
+ident(
+  int_ref a "test_sequentielle.ml" 47 1257 1272 "test_sequentielle.ml" 47 1257 1273
+)
+"test_sequentielle.ml" 47 1257 1286 "test_sequentielle.ml" 47 1257 1289
+type(
+  'c
+)
+"test_sequentielle.ml" 47 1257 1276 "test_sequentielle.ml" 47 1257 1290
+type(
+  ('b -> 'c) -> 'c
+)
+"test_sequentielle.ml" 48 1291 1299 "test_sequentielle.ml" 48 1291 1303
+type(
+  'a2 process -> ('a2 -> 'b0 process) -> ('b0 -> unit) -> unit
+)
+ident(
+  def bind "test_sequentielle.ml" 50 1391 1395 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 48 1291 1305 "test_sequentielle.ml" 48 1291 1307
+type(
+  'a2 process
+)
+type(
+  'a2 process
+)
+ident(
+  def p1 "test_sequentielle.ml" 48 1291 1322 "test_sequentielle.ml" 48 1291 1389
+)
+"test_sequentielle.ml" 48 1291 1323 "test_sequentielle.ml" 48 1291 1326
+type(
+  'a2 -> 'b0 process
+)
+type(
+  'a2 -> 'b0 process
+)
+ident(
+  def fp2 "test_sequentielle.ml" 48 1291 1347 "test_sequentielle.ml" 48 1291 1389
+)
+"test_sequentielle.ml" 48 1291 1348 "test_sequentielle.ml" 48 1291 1349
+type(
+  'b0 -> unit
+)
+type(
+  'b0 -> unit
+)
+ident(
+  def c "test_sequentielle.ml" 48 1291 1366 "test_sequentielle.ml" 48 1291 1389
+)
+"test_sequentielle.ml" 48 1291 1366 "test_sequentielle.ml" 48 1291 1368
+type(
+  'a2 process
+)
+ident(
+  int_ref p1 "test_sequentielle.ml" 48 1291 1305 "test_sequentielle.ml" 48 1291 1307
+)
+"test_sequentielle.ml" 48 1291 1374 "test_sequentielle.ml" 48 1291 1375
+type(
+  'a2
+)
+ident(
+  def a "test_sequentielle.ml" 48 1291 1379 "test_sequentielle.ml" 48 1291 1388
+)
+"test_sequentielle.ml" 48 1291 1380 "test_sequentielle.ml" 48 1291 1383
+type(
+  'a2 -> 'b0 process
+)
+ident(
+  int_ref fp2 "test_sequentielle.ml" 48 1291 1323 "test_sequentielle.ml" 48 1291 1326
+)
+"test_sequentielle.ml" 48 1291 1384 "test_sequentielle.ml" 48 1291 1385
+type(
+  'a2
+)
+ident(
+  int_ref a "test_sequentielle.ml" 48 1291 1374 "test_sequentielle.ml" 48 1291 1375
+)
+"test_sequentielle.ml" 48 1291 1379 "test_sequentielle.ml" 48 1291 1386
+type(
+  'b0 process
+)
+"test_sequentielle.ml" 48 1291 1387 "test_sequentielle.ml" 48 1291 1388
+type(
+  'b0 -> unit
+)
+ident(
+  int_ref c "test_sequentielle.ml" 48 1291 1348 "test_sequentielle.ml" 48 1291 1349
+)
+"test_sequentielle.ml" 48 1291 1379 "test_sequentielle.ml" 48 1291 1388
+type(
+  unit
+)
+"test_sequentielle.ml" 48 1291 1369 "test_sequentielle.ml" 48 1291 1389
+type(
+  'a2 -> unit
+)
+"test_sequentielle.ml" 48 1291 1366 "test_sequentielle.ml" 48 1291 1389
+type(
+  unit
+)
+"test_sequentielle.ml" 50 1391 1399 "test_sequentielle.ml" 50 1391 1402
+type(
+  (('d -> unit) -> 'e) -> 'd
+)
+ident(
+  def run "test_sequentielle.ml" 55 1559 1580 "test_sequentielle.ml" 57 1583 1587
+)
+"test_sequentielle.ml" 50 1391 1403 "test_sequentielle.ml" 50 1391 1404
+type(
+  ('d -> unit) -> 'e
+)
+ident(
+  def p "test_sequentielle.ml" 51 1408 1414 "test_sequentielle.ml" 55 1559 1580
+)
+"test_sequentielle.ml" 51 1408 1418 "test_sequentielle.ml" 51 1408 1424
+type(
+  'd option ref
+)
+ident(
+  def result "test_sequentielle.ml" 52 1441 1447 "test_sequentielle.ml" 55 1559 1580
+)
+"test_sequentielle.ml" 51 1408 1427 "test_sequentielle.ml" 51 1408 1430
+type(
+  'd option -> 'd option ref
+)
+ident(
+  int_ref Stdlib.ref "stdlib.mli" 1164 44392 44392 "stdlib.mli" 1164 44392 44436
+)
+"test_sequentielle.ml" 51 1408 1430 "test_sequentielle.ml" 51 1408 1436
+type(
+  'd option
+)
+"test_sequentielle.ml" 51 1408 1427 "test_sequentielle.ml" 51 1408 1436
+type(
+  'd option ref
+)
+"test_sequentielle.ml" 52 1441 1451 "test_sequentielle.ml" 52 1441 1452
+type(
+  'd -> unit
+)
+ident(
+  def c "test_sequentielle.ml" 52 1441 1497 "test_sequentielle.ml" 55 1559 1580
+)
+"test_sequentielle.ml" 52 1441 1460 "test_sequentielle.ml" 52 1441 1461
+type(
+  'd
+)
+ident(
+  def a "test_sequentielle.ml" 52 1441 1465 "test_sequentielle.ml" 52 1441 1492
+)
+"test_sequentielle.ml" 52 1441 1465 "test_sequentielle.ml" 52 1441 1471
+type(
+  'd option ref
+)
+ident(
+  int_ref result "test_sequentielle.ml" 51 1408 1418 "test_sequentielle.ml" 51 1408 1424
+)
+"test_sequentielle.ml" 52 1441 1471 "test_sequentielle.ml" 52 1441 1473
+type(
+  'd option ref -> 'd option -> unit
+)
+ident(
+  int_ref Stdlib.( := ) "stdlib.mli" 1173 44704 44704 "stdlib.mli" 1173 44704 44757
+)
+"test_sequentielle.ml" 52 1441 1479 "test_sequentielle.ml" 52 1441 1480
+type(
+  'd
+)
+ident(
+  int_ref a "test_sequentielle.ml" 52 1441 1460 "test_sequentielle.ml" 52 1441 1461
+)
+"test_sequentielle.ml" 52 1441 1474 "test_sequentielle.ml" 52 1441 1480
+type(
+  'd option
+)
+"test_sequentielle.ml" 52 1441 1465 "test_sequentielle.ml" 52 1441 1480
+type(
+  unit
+)
+"test_sequentielle.ml" 52 1441 1482 "test_sequentielle.ml" 52 1441 1489
+type(
+  unit -> unit
+)
+ident(
+  int_ref suivant "test_sequentielle.ml" 18 468 476 "test_sequentielle.ml" 18 468 483
+)
+"test_sequentielle.ml" 52 1441 1490 "test_sequentielle.ml" 52 1441 1492
+type(
+  unit
+)
+"test_sequentielle.ml" 52 1441 1482 "test_sequentielle.ml" 52 1441 1492
+type(
+  unit
+)
+"test_sequentielle.ml" 52 1441 1465 "test_sequentielle.ml" 52 1441 1492
+type(
+  unit
+)
+"test_sequentielle.ml" 52 1441 1455 "test_sequentielle.ml" 52 1441 1493
+type(
+  'd -> unit
+)
+"test_sequentielle.ml" 52 1441 1497 "test_sequentielle.ml" 52 1441 1498
+type(
+  ('d -> unit) -> 'e
+)
+ident(
+  int_ref p "test_sequentielle.ml" 50 1391 1403 "test_sequentielle.ml" 50 1391 1404
+)
+"test_sequentielle.ml" 52 1441 1499 "test_sequentielle.ml" 52 1441 1500
+type(
+  'd -> unit
+)
+ident(
+  int_ref c "test_sequentielle.ml" 52 1441 1451 "test_sequentielle.ml" 52 1441 1452
+)
+"test_sequentielle.ml" 52 1441 1497 "test_sequentielle.ml" 52 1441 1500
+type(
+  'e
+)
+"test_sequentielle.ml" 53 1502 1514 "test_sequentielle.ml" 53 1502 1515
+type(
+  'd option ref -> 'd option
+)
+ident(
+  int_ref Stdlib.( ! ) "stdlib.mli" 1167 44498 44498 "stdlib.mli" 1167 44498 44539
+)
+"test_sequentielle.ml" 53 1502 1515 "test_sequentielle.ml" 53 1502 1521
+type(
+  'd option ref
+)
+ident(
+  int_ref result "test_sequentielle.ml" 51 1408 1418 "test_sequentielle.ml" 51 1408 1424
+)
+"test_sequentielle.ml" 53 1502 1514 "test_sequentielle.ml" 53 1502 1521
+type(
+  'd option
+)
+"test_sequentielle.ml" 54 1528 1538 "test_sequentielle.ml" 54 1528 1542
+type(
+  'd option
+)
+type(
+  'd option
+)
+"test_sequentielle.ml" 54 1528 1553 "test_sequentielle.ml" 54 1528 1558
+type(
+  bool
+)
+"test_sequentielle.ml" 54 1528 1546 "test_sequentielle.ml" 54 1528 1558
+type(
+  'd
+)
+"test_sequentielle.ml" 55 1559 1574 "test_sequentielle.ml" 55 1559 1575
+type(
+  'd
+)
+ident(
+  def a "test_sequentielle.ml" 55 1559 1579 "test_sequentielle.ml" 55 1559 1580
+)
+"test_sequentielle.ml" 55 1559 1569 "test_sequentielle.ml" 55 1559 1575
+type(
+  'd option
+)
+type(
+  'd option
+)
+"test_sequentielle.ml" 55 1559 1579 "test_sequentielle.ml" 55 1559 1580
+type(
+  'd
+)
+ident(
+  int_ref a "test_sequentielle.ml" 55 1559 1574 "test_sequentielle.ml" 55 1559 1575
+)
+"test_sequentielle.ml" 53 1502 1508 "test_sequentielle.ml" 55 1559 1580
+type(
+  'd
+)
+"test_sequentielle.ml" 52 1441 1497 "test_sequentielle.ml" 55 1559 1580
+type(
+  'd
+)
+"test_sequentielle.ml" 52 1441 1447 "test_sequentielle.ml" 55 1559 1580
+type(
+  'd
+)
+"test_sequentielle.ml" 51 1408 1414 "test_sequentielle.ml" 55 1559 1580
+type(
+  'd
+)
+"test_sequentielle.ml" 59 1589 1596 "test_sequentielle.ml" 59 1589 1599
+ident(
+  def Lib "test_sequentielle.ml" 63 1715 1718 "test_sequentielle.ml" 0 0 -1
+)
+"test_sequentielle.ml" 60 1617 1623 "test_sequentielle.ml" 60 1617 1630
+type(
+  'a K.process -> ('a -> 'b K.process) -> 'b K.process
+)
+ident(
+  def >>= "test_sequentielle.ml" 61 1648 1650 "test_sequentielle.ml" 63 1715 1718
+)
+"test_sequentielle.ml" 60 1617 1631 "test_sequentielle.ml" 60 1617 1632
+type(
+  'a K.process
+)
+ident(
+  def x "test_sequentielle.ml" 60 1617 1633 "test_sequentielle.ml" 60 1617 1647
+)
+"test_sequentielle.ml" 60 1617 1633 "test_sequentielle.ml" 60 1617 1634
+type(
+  'a -> 'b K.process
+)
+ident(
+  def f "test_sequentielle.ml" 60 1617 1637 "test_sequentielle.ml" 60 1617 1647
+)
+"test_sequentielle.ml" 60 1617 1637 "test_sequentielle.ml" 60 1617 1643
+type(
+  'a K.process -> ('a -> 'b K.process) -> 'b K.process
+)
+ident(
+  int_ref K.bind "test_sequentielle.ml" 10 285 287 "test_sequentielle.ml" 10 285 343
+)
+"test_sequentielle.ml" 60 1617 1644 "test_sequentielle.ml" 60 1617 1645
+type(
+  'a K.process
+)
+ident(
+  int_ref x "test_sequentielle.ml" 60 1617 1631 "test_sequentielle.ml" 60 1617 1632
+)
+"test_sequentielle.ml" 60 1617 1646 "test_sequentielle.ml" 60 1617 1647
+type(
+  'a -> 'b K.process
+)
+ident(
+  int_ref f "test_sequentielle.ml" 60 1617 1633 "test_sequentielle.ml" 60 1617 1634
+)
+"test_sequentielle.ml" 60 1617 1637 "test_sequentielle.ml" 60 1617 1647
+type(
+  'b K.process
+)
+"test_sequentielle.ml" 61 1648 1654 "test_sequentielle.ml" 61 1648 1659
+type(
+  ('c -> 'd) -> 'c -> 'd K.process
+)
+ident(
+  def delay "test_sequentielle.ml" 62 1666 1714 "test_sequentielle.ml" 63 1715 1718
+)
+"test_sequentielle.ml" 61 1648 1660 "test_sequentielle.ml" 61 1648 1661
+type(
+  'c -> 'd
+)
+ident(
+  def f "test_sequentielle.ml" 61 1648 1662 "test_sequentielle.ml" 62 1666 1714
+)
+"test_sequentielle.ml" 61 1648 1662 "test_sequentielle.ml" 61 1648 1663
+type(
+  'c
+)
+ident(
+  def x "test_sequentielle.ml" 62 1666 1670 "test_sequentielle.ml" 62 1666 1714
+)
+"test_sequentielle.ml" 62 1666 1671 "test_sequentielle.ml" 62 1666 1679
+type(
+  unit -> unit K.process
+)
+ident(
+  int_ref K.return "test_sequentielle.ml" 9 254 256 "test_sequentielle.ml" 9 254 284
+)
+"test_sequentielle.ml" 62 1666 1680 "test_sequentielle.ml" 62 1666 1682
+type(
+  unit
+)
+"test_sequentielle.ml" 62 1666 1670 "test_sequentielle.ml" 62 1666 1683
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 62 1666 1684 "test_sequentielle.ml" 62 1666 1687
+type(
+  unit K.process -> (unit -> 'd K.process) -> 'd K.process
+)
+ident(
+  int_ref >>= "test_sequentielle.ml" 60 1617 1623 "test_sequentielle.ml" 60 1617 1630
+)
+"test_sequentielle.ml" 62 1666 1693 "test_sequentielle.ml" 62 1666 1695
+type(
+  unit
+)
+"test_sequentielle.ml" 62 1666 1699 "test_sequentielle.ml" 62 1666 1707
+type(
+  'd -> 'd K.process
+)
+ident(
+  int_ref K.return "test_sequentielle.ml" 9 254 256 "test_sequentielle.ml" 9 254 284
+)
+"test_sequentielle.ml" 62 1666 1709 "test_sequentielle.ml" 62 1666 1710
+type(
+  'c -> 'd
+)
+ident(
+  int_ref f "test_sequentielle.ml" 61 1648 1660 "test_sequentielle.ml" 61 1648 1661
+)
+"test_sequentielle.ml" 62 1666 1711 "test_sequentielle.ml" 62 1666 1712
+type(
+  'c
+)
+ident(
+  int_ref x "test_sequentielle.ml" 61 1648 1662 "test_sequentielle.ml" 61 1648 1663
+)
+"test_sequentielle.ml" 62 1666 1708 "test_sequentielle.ml" 62 1666 1713
+type(
+  'd
+)
+"test_sequentielle.ml" 62 1666 1699 "test_sequentielle.ml" 62 1666 1713
+type(
+  'd K.process
+)
+"test_sequentielle.ml" 62 1666 1688 "test_sequentielle.ml" 62 1666 1714
+type(
+  unit -> 'd K.process
+)
+"test_sequentielle.ml" 62 1666 1670 "test_sequentielle.ml" 62 1666 1714
+type(
+  'd K.process
+)
+"test_sequentielle.ml" 65 1720 1727 "test_sequentielle.ml" 65 1720 1734
+ident(
+  def Example "test_sequentielle.ml" 85 2240 2243 "test_sequentielle.ml" 0 0 -1
+)
+"test_sequentielle.ml" 67 1755 1764 "test_sequentielle.ml" 67 1755 1767
+ident(
+  def Lib "test_sequentielle.ml" 67 1755 1776 "test_sequentielle.ml" 85 2240 2243
+)
+"test_sequentielle.ml" 70 1794 1800 "test_sequentielle.ml" 70 1794 1808
+type(
+  int K.out_port -> unit K.process
+)
+ident(
+  def integers "test_sequentielle.ml" 76 1943 1945 "test_sequentielle.ml" 85 2240 2243
+)
+"test_sequentielle.ml" 70 1794 1810 "test_sequentielle.ml" 70 1794 1812
+type(
+  int K.out_port
+)
+type(
+  int K.out_port
+)
+ident(
+  def qo "test_sequentielle.ml" 71 1851 1855 "test_sequentielle.ml" 74 1927 1937
+)
+"test_sequentielle.ml" 71 1851 1863 "test_sequentielle.ml" 71 1851 1867
+type(
+  int -> 'a K.process
+)
+ident(
+  def loop "test_sequentielle.ml" 71 1851 1855 "test_sequentielle.ml" 74 1927 1937
+)
+"test_sequentielle.ml" 71 1851 1868 "test_sequentielle.ml" 71 1851 1869
+type(
+  int
+)
+ident(
+  def n "test_sequentielle.ml" 72 1872 1878 "test_sequentielle.ml" 72 1872 1919
+)
+"test_sequentielle.ml" 72 1872 1879 "test_sequentielle.ml" 72 1872 1884
+type(
+  int -> int K.out_port -> unit K.process
+)
+ident(
+  int_ref K.put "test_sequentielle.ml" 6 127 129 "test_sequentielle.ml" 6 127 171
+)
+"test_sequentielle.ml" 72 1872 1885 "test_sequentielle.ml" 72 1872 1886
+type(
+  int
+)
+ident(
+  int_ref n "test_sequentielle.ml" 71 1851 1868 "test_sequentielle.ml" 71 1851 1869
+)
+"test_sequentielle.ml" 72 1872 1887 "test_sequentielle.ml" 72 1872 1889
+type(
+  int K.out_port
+)
+ident(
+  int_ref qo "test_sequentielle.ml" 70 1794 1810 "test_sequentielle.ml" 70 1794 1812
+)
+"test_sequentielle.ml" 72 1872 1878 "test_sequentielle.ml" 72 1872 1890
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 72 1872 1891 "test_sequentielle.ml" 72 1872 1894
+type(
+  unit K.process -> (unit -> 'a K.process) -> 'a K.process
+)
+ident(
+  int_ref Lib.( >>= ) "test_sequentielle.ml" 60 1617 1623 "test_sequentielle.ml" 60 1617 1630
+)
+"test_sequentielle.ml" 72 1872 1900 "test_sequentielle.ml" 72 1872 1902
+type(
+  unit
+)
+"test_sequentielle.ml" 72 1872 1906 "test_sequentielle.ml" 72 1872 1910
+type(
+  int -> 'a K.process
+)
+ident(
+  int_ref loop "test_sequentielle.ml" 71 1851 1863 "test_sequentielle.ml" 71 1851 1867
+)
+"test_sequentielle.ml" 72 1872 1912 "test_sequentielle.ml" 72 1872 1913
+type(
+  int
+)
+ident(
+  int_ref n "test_sequentielle.ml" 71 1851 1868 "test_sequentielle.ml" 71 1851 1869
+)
+"test_sequentielle.ml" 72 1872 1914 "test_sequentielle.ml" 72 1872 1915
+type(
+  int -> int -> int
+)
+ident(
+  int_ref Stdlib.( + ) "stdlib.mli" 341 13435 13435 "stdlib.mli" 341 13435 13481
+)
+"test_sequentielle.ml" 72 1872 1916 "test_sequentielle.ml" 72 1872 1917
+type(
+  int
+)
+"test_sequentielle.ml" 72 1872 1911 "test_sequentielle.ml" 72 1872 1918
+type(
+  int
+)
+"test_sequentielle.ml" 72 1872 1906 "test_sequentielle.ml" 72 1872 1918
+type(
+  'a K.process
+)
+"test_sequentielle.ml" 72 1872 1895 "test_sequentielle.ml" 72 1872 1919
+type(
+  unit -> 'a K.process
+)
+"test_sequentielle.ml" 72 1872 1878 "test_sequentielle.ml" 72 1872 1919
+type(
+  'a K.process
+)
+"test_sequentielle.ml" 74 1927 1931 "test_sequentielle.ml" 74 1927 1935
+type(
+  int -> unit K.process
+)
+ident(
+  int_ref loop "test_sequentielle.ml" 71 1851 1863 "test_sequentielle.ml" 71 1851 1867
+)
+"test_sequentielle.ml" 74 1927 1936 "test_sequentielle.ml" 74 1927 1937
+type(
+  int
+)
+"test_sequentielle.ml" 74 1927 1931 "test_sequentielle.ml" 74 1927 1937
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 71 1851 1855 "test_sequentielle.ml" 74 1927 1937
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 76 1943 1949 "test_sequentielle.ml" 76 1943 1955
+type(
+  int K.in_port -> unit K.process
+)
+ident(
+  def output "test_sequentielle.ml" 82 2106 2108 "test_sequentielle.ml" 85 2240 2243
+)
+"test_sequentielle.ml" 76 1943 1957 "test_sequentielle.ml" 76 1943 1959
+type(
+  int K.in_port
+)
+type(
+  int K.in_port
+)
+ident(
+  def qi "test_sequentielle.ml" 77 1996 2000 "test_sequentielle.ml" 80 2089 2100
+)
+"test_sequentielle.ml" 77 1996 2008 "test_sequentielle.ml" 77 1996 2012
+type(
+  unit -> 'b K.process
+)
+ident(
+  def loop "test_sequentielle.ml" 77 1996 2000 "test_sequentielle.ml" 80 2089 2100
+)
+"test_sequentielle.ml" 77 1996 2013 "test_sequentielle.ml" 77 1996 2015
+type(
+  unit
+)
+"test_sequentielle.ml" 78 2018 2025 "test_sequentielle.ml" 78 2018 2030
+type(
+  int K.in_port -> int K.process
+)
+ident(
+  int_ref K.get "test_sequentielle.ml" 7 172 174 "test_sequentielle.ml" 7 172 207
+)
+"test_sequentielle.ml" 78 2018 2031 "test_sequentielle.ml" 78 2018 2033
+type(
+  int K.in_port
+)
+ident(
+  int_ref qi "test_sequentielle.ml" 76 1943 1957 "test_sequentielle.ml" 76 1943 1959
+)
+"test_sequentielle.ml" 78 2018 2024 "test_sequentielle.ml" 78 2018 2034
+type(
+  int K.process
+)
+"test_sequentielle.ml" 78 2018 2035 "test_sequentielle.ml" 78 2018 2038
+type(
+  int K.process -> (int -> 'b K.process) -> 'b K.process
+)
+ident(
+  int_ref Lib.( >>= ) "test_sequentielle.ml" 60 1617 1623 "test_sequentielle.ml" 60 1617 1630
+)
+"test_sequentielle.ml" 78 2018 2044 "test_sequentielle.ml" 78 2018 2045
+type(
+  int
+)
+ident(
+  def v "test_sequentielle.ml" 78 2018 2049 "test_sequentielle.ml" 78 2018 2080
+)
+"test_sequentielle.ml" 78 2018 2049 "test_sequentielle.ml" 78 2018 2062
+type(
+  (int -> unit, out_channel, unit) format -> int -> unit
+)
+ident(
+  int_ref Stdlib.Printf.printf "printf.mli" 129 6889 6889 "printf.mli" 129 6889 6938
+)
+"test_sequentielle.ml" 78 2018 2063 "test_sequentielle.ml" 78 2018 2069
+type(
+  (int -> unit, out_channel, unit) format
+)
+"test_sequentielle.ml" 78 2018 2070 "test_sequentielle.ml" 78 2018 2071
+type(
+  int
+)
+ident(
+  int_ref v "test_sequentielle.ml" 78 2018 2044 "test_sequentielle.ml" 78 2018 2045
+)
+"test_sequentielle.ml" 78 2018 2049 "test_sequentielle.ml" 78 2018 2071
+type(
+  unit
+)
+"test_sequentielle.ml" 78 2018 2073 "test_sequentielle.ml" 78 2018 2077
+type(
+  unit -> 'b K.process
+)
+ident(
+  int_ref loop "test_sequentielle.ml" 77 1996 2008 "test_sequentielle.ml" 77 1996 2012
+)
+"test_sequentielle.ml" 78 2018 2078 "test_sequentielle.ml" 78 2018 2080
+type(
+  unit
+)
+"test_sequentielle.ml" 78 2018 2073 "test_sequentielle.ml" 78 2018 2080
+type(
+  'b K.process
+)
+"test_sequentielle.ml" 78 2018 2049 "test_sequentielle.ml" 78 2018 2080
+type(
+  'b K.process
+)
+"test_sequentielle.ml" 78 2018 2039 "test_sequentielle.ml" 78 2018 2081
+type(
+  int -> 'b K.process
+)
+"test_sequentielle.ml" 78 2018 2024 "test_sequentielle.ml" 78 2018 2081
+type(
+  'b K.process
+)
+"test_sequentielle.ml" 80 2089 2093 "test_sequentielle.ml" 80 2089 2097
+type(
+  unit -> unit K.process
+)
+ident(
+  int_ref loop "test_sequentielle.ml" 77 1996 2008 "test_sequentielle.ml" 77 1996 2012
+)
+"test_sequentielle.ml" 80 2089 2098 "test_sequentielle.ml" 80 2089 2100
+type(
+  unit
+)
+"test_sequentielle.ml" 80 2089 2093 "test_sequentielle.ml" 80 2089 2100
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 77 1996 2000 "test_sequentielle.ml" 80 2089 2100
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 82 2106 2112 "test_sequentielle.ml" 82 2106 2116
+type(
+  unit K.process
+)
+ident(
+  def main "test_sequentielle.ml" 84 2169 2239 "test_sequentielle.ml" 85 2240 2243
+)
+"test_sequentielle.ml" 83 2136 2141 "test_sequentielle.ml" 83 2136 2146
+type(
+  (unit -> int K.in_port * int K.out_port) ->
+  unit -> (int K.in_port * int K.out_port) K.process
+)
+ident(
+  int_ref Lib.delay "test_sequentielle.ml" 61 1648 1654 "test_sequentielle.ml" 61 1648 1659
+)
+"test_sequentielle.ml" 83 2136 2147 "test_sequentielle.ml" 83 2136 2160
+type(
+  unit -> int K.in_port * int K.out_port
+)
+ident(
+  int_ref K.new_channel "test_sequentielle.ml" 5 75 77 "test_sequentielle.ml" 5 75 126
+)
+"test_sequentielle.ml" 83 2136 2161 "test_sequentielle.ml" 83 2136 2163
+type(
+  unit
+)
+"test_sequentielle.ml" 83 2136 2140 "test_sequentielle.ml" 83 2136 2164
+type(
+  (int K.in_port * int K.out_port) K.process
+)
+"test_sequentielle.ml" 83 2136 2165 "test_sequentielle.ml" 83 2136 2168
+type(
+  (int K.in_port * int K.out_port) K.process ->
+  (int K.in_port * int K.out_port -> unit K.process) -> unit K.process
+)
+ident(
+  int_ref Lib.( >>= ) "test_sequentielle.ml" 60 1617 1623 "test_sequentielle.ml" 60 1617 1630
+)
+"test_sequentielle.ml" 84 2169 2181 "test_sequentielle.ml" 84 2169 2185
+type(
+  int K.in_port
+)
+ident(
+  def q_in "test_sequentielle.ml" 84 2169 2197 "test_sequentielle.ml" 84 2169 2238
+)
+"test_sequentielle.ml" 84 2169 2187 "test_sequentielle.ml" 84 2169 2192
+type(
+  int K.out_port
+)
+ident(
+  def q_out "test_sequentielle.ml" 84 2169 2197 "test_sequentielle.ml" 84 2169 2238
+)
+"test_sequentielle.ml" 84 2169 2180 "test_sequentielle.ml" 84 2169 2193
+type(
+  int K.in_port * int K.out_port
+)
+"test_sequentielle.ml" 84 2169 2197 "test_sequentielle.ml" 84 2169 2203
+type(
+  unit K.process list -> unit K.process
+)
+ident(
+  int_ref K.doco "test_sequentielle.ml" 8 208 210 "test_sequentielle.ml" 8 208 253
+)
+"test_sequentielle.ml" 84 2169 2206 "test_sequentielle.ml" 84 2169 2214
+type(
+  int K.out_port -> unit K.process
+)
+ident(
+  int_ref integers "test_sequentielle.ml" 70 1794 1800 "test_sequentielle.ml" 70 1794 1808
+)
+"test_sequentielle.ml" 84 2169 2215 "test_sequentielle.ml" 84 2169 2220
+type(
+  int K.out_port
+)
+ident(
+  int_ref q_out "test_sequentielle.ml" 84 2169 2187 "test_sequentielle.ml" 84 2169 2192
+)
+"test_sequentielle.ml" 84 2169 2206 "test_sequentielle.ml" 84 2169 2220
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 84 2169 2223 "test_sequentielle.ml" 84 2169 2229
+type(
+  int K.in_port -> unit K.process
+)
+ident(
+  int_ref output "test_sequentielle.ml" 76 1943 1949 "test_sequentielle.ml" 76 1943 1955
+)
+"test_sequentielle.ml" 84 2169 2230 "test_sequentielle.ml" 84 2169 2234
+type(
+  int K.in_port
+)
+ident(
+  int_ref q_in "test_sequentielle.ml" 84 2169 2181 "test_sequentielle.ml" 84 2169 2185
+)
+"test_sequentielle.ml" 84 2169 2223 "test_sequentielle.ml" 84 2169 2234
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 84 2169 2204 "test_sequentielle.ml" 84 2169 2238
+type(
+  unit K.process list
+)
+"test_sequentielle.ml" 84 2169 2197 "test_sequentielle.ml" 84 2169 2238
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 84 2169 2175 "test_sequentielle.ml" 84 2169 2239
+type(
+  int K.in_port * int K.out_port -> unit K.process
+)
+"test_sequentielle.ml" 83 2136 2140 "test_sequentielle.ml" 84 2169 2239
+type(
+  unit K.process
+)
+"test_sequentielle.ml" 87 2245 2252 "test_sequentielle.ml" 87 2245 2256
+ident(
+  def Test "test_sequentielle.ml" 87 2245 2270 "test_sequentielle.ml" 0 0 -1
+)
+"test_sequentielle.ml" 89 2274 2274 "test_sequentielle.ml" 89 2274 2280
+type(
+  unit VS.process -> unit
+)
+ident(
+  int_ref VS.run "test_sequentielle.ml" 11 344 346 "test_sequentielle.ml" 11 344 371
+)
+"test_sequentielle.ml" 89 2274 2281 "test_sequentielle.ml" 89 2274 2290
+type(
+  unit VS.process
+)
+ident(
+  int_ref Test.main "test_sequentielle.ml" 82 2106 2112 "test_sequentielle.ml" 82 2106 2116
+)
+"test_sequentielle.ml" 89 2274 2274 "test_sequentielle.ml" 89 2274 2290
+type(
+  unit
+)
