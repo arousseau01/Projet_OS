@@ -1,5 +1,3 @@
-(* #require "unix" *)
-
 module type S = sig
   type 'a process
   type 'a in_port
@@ -13,7 +11,6 @@ module type S = sig
   val run: 'a process -> 'a
 end
 
-
 module Version_Unix :S = struct
 
 (* open Marshal
@@ -21,10 +18,8 @@ module Version_Unix :S = struct
   
   type 'a process = (unit -> 'a)
 
-  type 'a channel = { chan_out: out_channel;
-                      chan_in: in_channel; }
-  type 'a in_port = 'a channel
-  type 'a out_port = 'a channel
+  type 'a in_port = in_channel
+  type 'a out_port = out_channel
 
   let return v  = (fun () -> v)
 
@@ -32,20 +27,37 @@ module Version_Unix :S = struct
 
   let bind p f = (fun () -> f (run p) ())
 
-  let new_channel () =
-    let my_pipe = Unix.pipe () in
-    let channel = { chan_out = Unix.out_channel_of_descr (snd my_pipe);
-                    chan_in = Unix.in_channel_of_descr (fst my_pipe); } in
-    channel, channel
+   let port = ref 12345
+
+  let new_channel () = 
+
+    let host = Unix.gethostbyname (Unix.gethostname ()) in
+    let addr = Unix.ADDR_INET (host.Unix.h_addr_list.(0), !port) in
+    port := !port + 1 ;
+
+    let in_socket = Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
+    let out_socket= Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
+
+    (* Starting server side *)
+    Unix.bind out_socket addr ;
+    Unix.listen out_socket 1 ;
+
+    (* Connecting client side *)
+    Unix.connect in_socket addr ;
+
+    (* Accepting client *)
+    let out_socket, _ = Unix.accept out_socket in
+
+    (Unix.in_channel_of_descr in_socket, 
+     Unix.out_channel_of_descr out_socket)
   
-  let put value channel = 
-    let out_chan =  channel.chan_out in
+  let put value out_chan = 
     (fun () ->
       Marshal.to_channel out_chan value [];
-      flush out_chan;
+      flush out_chan ;
     )
 
-  let get channel =
+  let get in_chan =
     (fun () ->
       let rec next chan = 
         begin
@@ -55,7 +67,7 @@ module Version_Unix :S = struct
           with End_of_file -> next chan 
         end
       in
-      next channel.chan_in
+      next in_chan
     )
 
   let rec doco l =
@@ -74,8 +86,6 @@ module Version_Unix :S = struct
       next l
     )
 end
-
-
        
 module Lib (K : S) = struct
   let ( >>= ) x f = K.bind x f

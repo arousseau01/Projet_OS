@@ -21,8 +21,7 @@ module Version_Unix :S = struct
   
   type 'a process = (unit -> 'a)
 
-  type 'a channel = { chan_out: out_channel;
-                      chan_in: in_channel; }
+  type 'a channel = int
   type 'a in_port = 'a channel
   type 'a out_port = 'a channel
 
@@ -32,49 +31,40 @@ module Version_Unix :S = struct
 
   let bind p f = (fun () -> f (run p) ())
 
+  let tag = ref 0
+
   let new_channel () =
-    let my_pipe = Unix.pipe () in
-    let channel = { chan_out = Unix.out_channel_of_descr (snd my_pipe);
-                    chan_in = Unix.in_channel_of_descr (fst my_pipe); } in
-    channel, channel
+    let chan = !tag in
+    tag := !tag + 1;
+    chan, chan
   
   let put value channel = 
-    let out_chan =  channel.chan_out in
-    (fun () ->
-      Marshal.to_channel out_chan value [];
-      flush out_chan;
-    )
-
+    let  size = Mpi.comm_size Mpi.comm_world in
+    let  rank = Mpi.comm_rank  Mpi.comm_world in 
+    fun () -> 
+      for dest = 0 to (size - 1) do
+        if dest <> rank then begin
+          Mpi.send value dest channel Mpi.comm_world; 
+          end
+      done
+  
   let get channel =
-    (fun () ->
-      let rec next chan = 
-        begin
-          try
-            let value = Marshal.from_channel chan  in
-            value 
-          with End_of_file -> next chan 
-        end
-      in
-      next channel.chan_in
-    )
+    fun () ->
+      let n = Mpi.receive Mpi.any_source channel Mpi.comm_world in 
+      n
 
   let rec doco l =
     (fun () ->
-      let rec next l =
-        match l with 
-          | [] -> ()
-          | t::q ->  begin 
-            match Unix.fork () with 
-              | 0 -> run t ; exit 0
-              | pid -> 
-              next q ; 
-              ignore (Unix.wait ())
-            end
-      in
-      next l
+      let  size = Mpi.comm_size Mpi.comm_world in
+      let  rank = Mpi.comm_rank  Mpi.comm_world in 
+      if (List.length l) > (size + 1) then begin failwith "Error: too much process for the size of the communicator\n" end;
+      
+      let processes = (Array.of_list l) in
+      if (rank + 1) <= (Array.length processes) then begin 
+          Printf.printf "%d: launching a process" rank ; print_newline () ;
+          run processes.(rank) end
     )
 end
-
 
        
 module Lib (K : S) = struct

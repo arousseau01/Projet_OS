@@ -11,109 +11,78 @@ module type S = sig
   val run: 'a process -> 'a
 end
 
-module Mutex = struct
-  type t = Locked | Unlocked
-  let create () = let m = ref Unlocked in m
-  let lock (m: t ref) =
-    match !m with
-    | Unlocked -> ignore(m := Locked)
-    | Locked -> failwith "Mutex already locked"
-              
-  let unlock (m :t ref) =
-    match !m with
-    | Locked -> ignore(m := Unlocked)
-    | _ -> failwith "Mutex already unlocked"
-end
-             
-
 module Version_Unix :S = struct
 
-  (* open Marshal
-   * open Mutex
+(* open Marshal
    * open Unix *)
   
   type 'a process = (unit -> 'a)
-  type 'a channel = { fd_out: Unix.file_descr;
-                      fd_in: Unix.file_descr;
-                      m: Mutex.t ref; }
-  type 'a in_port = 'a channel
-  type 'a out_port = 'a channel
 
+  type 'a in_port = in_channel
+  type 'a out_port = out_channel
 
-  let new_channel_client () =
-    (* côté client *)
-    let port, hostname = 
-    if (Array.length Sys.argv) >= 4
-    then (12345, Unix.gethostname ())
-    else (int_of_string Sys.argv.(2), Sys.argv.(3))
-    in
-    let host = Unix.gethostbyname hostname in
-    let sockaddr = Unix.ADDR_INET (host.Unix.h_addr_list.(0), port) in
-    let fd = Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
-    Unix.connect fd sockaddr;
-    let channel =  { fd_out = fd;
-                     fd_in = fd;
-                     m = Mutex.create (); } in
-    channel, channel
-
-  let new_channel_server () =
-    (* côté serveur *)
-
-    let localhost = Unix.gethostname () in
-    let host = Unix.gethostbyname localhost in
-    let port = 
-      if (Array.length Sys.argv) >= 3
-      then int_of_string Sys.argv.(2)
-      else 12345
-    in
-    let sockaddr = Unix.ADDR_INET (host.Unix.h_addr_list.(0), port) in
-    let fd_server =  Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
-    Unix.bind fd_server sockaddr;
-    Unix.listen fd_server 10;
-    let fd, cliend_addr = Unix.accept fd_server in
-    
-    let channel =  { fd_out = fd;
-                     fd_in = fd;
-                     m = Mutex.create (); } in
-    channel, channel
-
-  let new_channel () =
-    (* retourne un canal de communication du dôté serveur ou client *)
-
-    match Sys.argv.(1) with
-    | "server" -> new_channel_server ()
-    | "client" -> new_channel_client ()
-    | _ -> failwith "missing argument (server / client)"
-
-
-         
-  let put value channel () =
-    Mutex.lock channel.m;
-    let out_chan = Unix.out_channel_of_descr channel.fd_out in
-    Marshal.to_channel out_chan value [];
-    Mutex.unlock channel.m
-
-  let rec get channel () =
-    let in_chan = Unix.in_channel_of_descr channel.fd_in in
-      try
-        Mutex.lock channel.m;
-        let value = Marshal.from_channel in_chan in
-        Mutex.unlock channel.m; value
-      with End_of_file ->
-        Mutex.unlock channel.m;
-        get channel () 
-
-  let rec doco l () =
-    match l with 
-      | [] -> ()
-      | t::q -> begin match Unix.fork () with 
-        | 0 -> t ()
-        | _ -> doco q ()
-      end 
-  
-  let return v () = v
-
-  let bind p f () = f (p ()) ()
+  let return v  = (fun () -> v)
 
   let run p = p ()
+
+  let bind p f = (fun () -> f (run p) ())
+
+   let port = ref 12345
+
+  let new_channel () = 
+
+    let host = Unix.gethostbyname (Unix.gethostname ()) in
+    let addr = Unix.ADDR_INET (host.Unix.h_addr_list.(0), !port) in
+    port := !port + 1 ;
+
+    let in_socket = Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
+    let out_socket= Unix.socket Unix.PF_INET Unix.SOCK_STREAM 0 in
+
+    (* Starting server side *)
+    Unix.bind out_socket addr ;
+    Unix.listen out_socket 1 ;
+
+    (* Connecting client side *)
+    Unix.connect in_socket addr ;
+
+    (* Accepting client *)
+    let out_socket, _ = Unix.accept out_socket in
+
+    (Unix.in_channel_of_descr in_socket, 
+     Unix.out_channel_of_descr out_socket)
+  
+  let put value out_chan = 
+    (fun () ->
+      Marshal.to_channel out_chan value [];
+      flush out_chan;
+    )
+
+  let get in_chan =
+    (fun () ->
+      let rec next chan = 
+        begin
+          try
+            let value = Marshal.from_channel chan  in
+            value 
+          with End_of_file -> next chan 
+        end
+      in
+      next in_chan
+    )
+
+  let rec doco l =
+    (fun () ->
+      let rec next l =
+        match l with 
+          | [] -> ()
+          | t::q ->  begin 
+            match Unix.fork () with 
+              | 0 -> run t ; exit 0
+              | pid -> 
+              next q ; 
+              ignore (Unix.wait ())
+            end
+      in
+      next l
+    )
 end
