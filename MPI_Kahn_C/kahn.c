@@ -18,30 +18,20 @@ channel *new_channel() {
     chan->fd_out = fd[0];
     return chan;
     }
-
-void put(void *value, channel *chan, Kahn_Datatype dtype) 
+    
+void put(void *value, int cnt, channel *chan, Kahn_Datatype dtype) 
 {
 #ifdef DEBUG
     printf("Kahn::put ; dtype = %d, size_value = %d\n", dtype, _kahn_data_size[dtype]);
 #endif
-    write(chan->fd_in, value, _kahn_data_size[dtype]);
+    write(chan->fd_in, value,cnt* _kahn_data_size[dtype]);
 }
 
-void get(void *value, channel *chan, Kahn_Datatype dtype) 
+void get(void *value, int cnt,channel *chan, Kahn_Datatype dtype) 
 {
 #ifdef DEBUG
     printf("Kahn::get ; dtype = %d, size_value = %d\n", dtype, _kahn_data_size[dtype]);
 #endif
-    while(read(chan->fd_out, value, _kahn_data_size[dtype]) == 0) {};
-}
-
-void put_array(void *value, int cnt, channel *chan, Kahn_Datatype dtype) 
-{
-    write(chan->fd_in, value,cnt* _kahn_data_size[dtype]);
-}
-
-void get_array(void *value, int cnt,channel *chan, Kahn_Datatype dtype) 
-{
     while(read(chan->fd_out, value, cnt* _kahn_data_size[dtype]) == 0) {};
 }
 

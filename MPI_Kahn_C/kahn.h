@@ -5,11 +5,17 @@
 
 typedef enum { 
     KAHN_INT, 
+    KAHN_FLOAT,
     KAHN_DOUBLE,
     KAHN_LONG_DOUBLE,
 } Kahn_Datatype;
 
-static int _kahn_data_size[] = {4, 8, 16};
+static int _kahn_data_size[] = {
+    sizeof(int),
+    sizeof(float),
+    sizeof(double),
+    sizeof(long double)
+    };
 
 typedef void (*process)();
 
@@ -22,11 +28,8 @@ typedef struct Channel {
 
 channel *new_channel();
 
-void put(void *value, channel *chan_out, Kahn_Datatype dtype);
-void get(void *value, channel *chan_in, Kahn_Datatype dtype);
-
-void put_array(void *value, int cnt, channel *chan_out, Kahn_Datatype dtype);
-void get_array(void *value, int cnt, channel *chan_in, Kahn_Datatype dtype);
+void put(void *value, int cnt, channel *chan_out, Kahn_Datatype dtype);
+void get(void *value, int cnt, channel *chan_in, Kahn_Datatype dtype);
 
 void doco(int nb_proc, process processes[], void* arguments[]);
 

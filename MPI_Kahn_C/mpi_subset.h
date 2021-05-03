@@ -3,6 +3,7 @@
 
 typedef enum { 
     MPI_INT, 
+    MPI_FLOAT,
     MPI_DOUBLE,
     MPI_LONG_DOUBLE
 } MPI_Datatype;

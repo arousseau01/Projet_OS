@@ -159,6 +159,8 @@ Kahn_Datatype _khan2mpi_dtype(MPI_Datatype dtype)
     {
     case MPI_INT:
         return KAHN_INT;
+    case MPI_FLOAT:
+        return KAHN_FLOAT;
     case MPI_DOUBLE:
         return KAHN_DOUBLE;
     case MPI_LONG_DOUBLE:
@@ -182,11 +184,7 @@ int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm
 
     channel *chan = _mpi_channels[dest];
 
-    if (cnt == 1) {
-        put(buf, chan, _khan2mpi_dtype(dtype));
-    } else {
-        put_array(buf, cnt, chan, _khan2mpi_dtype(dtype));
-    }
+    put(buf, cnt, chan, _khan2mpi_dtype(dtype));
 
     
     return MPI_SUCCESS;
@@ -212,11 +210,8 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
 
     channel *chan = _mpi_channels[src];
 
-    if (cnt == 1) {
-        get(buf, chan, _khan2mpi_dtype(dtype));
-    } else {
-        get_array(buf, cnt, chan, _khan2mpi_dtype(dtype));
-    }
+    get(buf, cnt, chan, _khan2mpi_dtype(dtype));
+    
 
     return MPI_SUCCESS;
  }
