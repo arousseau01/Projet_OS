@@ -29,6 +29,8 @@ int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm
 int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
  MPI_Comm comm, MPI_Status *pstat);
 
+int MPI_Barrier(void);
+
  #endif
 
 

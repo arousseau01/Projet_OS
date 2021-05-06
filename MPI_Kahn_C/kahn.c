@@ -9,7 +9,7 @@
 
 #include "kahn.h"
 
-#define DEBUG
+//#define DEBUG
 
 channel *new_channel() {
    channel *chan = (channel*) malloc(sizeof(channel));
@@ -64,5 +64,5 @@ void doco(int nb_proc, process processes[], void **arguments) {
             pid_list[i] = pid;
         }
     }
-    wait(NULL);
+    //wait(NULL);
 }

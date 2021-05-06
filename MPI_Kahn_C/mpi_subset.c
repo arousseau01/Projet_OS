@@ -4,11 +4,14 @@
 #include <errno.h>
 #include <string.h>
 #include <sys/sysinfo.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 
 #include "mpi_subset.h"
 #include "kahn.h"
 
-// #define DEBUG
+//#define DEBUG
 
 static int _mpi_init = 0;
 static int _mpi_size = 1;
@@ -36,8 +39,12 @@ static int _mpi_getargs(int argc, char **argv)
 return MPI_SUCCESS;
 }
 
+/* table des canaux de communication entre processus */
 static channel ***_mpi_channels_global; 
-/* table des canaux de cmmunication entre processus */
+
+/* canal pour synchronisation */
+static channel *_mpi_barrier_channel;
+static int _mpi_barrier_counter = 0;
 
 static int _mpi_allocate_channels()
 /* Ouverture des canaux */
@@ -57,6 +64,11 @@ static int _mpi_allocate_channels()
             _mpi_channels_global[j][i] = chan;
         }
     }
+
+    _mpi_barrier_channel = malloc(sizeof(*_mpi_barrier_channel));
+    _mpi_barrier_channel = new_channel();
+    put(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
+
 #ifdef DEBUG
     printf("_mpi_allocate_channels\n");
 #endif
@@ -216,4 +228,22 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
     
 
     return MPI_SUCCESS;
+ }
+
+ int MPI_Barrier(void)
+ {  
+     get(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
+     _mpi_barrier_counter ++;
+     put(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
+
+#ifdef DEBUG
+    printf("[%d][%d] MPI_Barrier : _mpi_barrier_counter = %d\n", (int)getpid(), _mpi_rank, _mpi_barrier_counter);
+#endif
+
+     while((_mpi_barrier_counter % _mpi_size) != 0) {
+         get(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
+         put(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
+     }
+
+     return MPI_SUCCESS;
  }
