@@ -5,6 +5,6 @@ do
     for w in $(seq 1 4)
     do
 	    printf "\tnb processus = $w\n" ;
-	    /usr/bin/time -f "\t\t%E" ./test_pi -np $w $N;
+	    /usr/bin/time -f "\t\t%E" ./test_pi_benchmark -np $w $N;
     done
 done

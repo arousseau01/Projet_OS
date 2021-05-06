@@ -2,6 +2,7 @@
 #define MPI_INCLUDED
 
 typedef enum { 
+    MPI_BYTE,
     MPI_INT, 
     MPI_FLOAT,
     MPI_DOUBLE,

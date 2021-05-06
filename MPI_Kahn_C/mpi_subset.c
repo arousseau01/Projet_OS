@@ -157,6 +157,8 @@ Kahn_Datatype _khan2mpi_dtype(MPI_Datatype dtype)
 {
     switch (dtype)
     {
+    case MPI_BYTE:
+        return KAHN_BYTE;
     case MPI_INT:
         return KAHN_INT;
     case MPI_FLOAT:
