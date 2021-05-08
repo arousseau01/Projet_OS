@@ -3,7 +3,7 @@ OCAMLBUILD= ocamlbuild \
 		-libs str,unix \
 		-tags debug,annot
 
-MAIN=testUnix
+MAIN=Version_Unix
 TARGET=native
 
 all: $(MAIN)

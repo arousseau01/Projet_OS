@@ -1,5 +1,0 @@
-"Rule: ocaml dependencies ml (%=test_sequentielle )": "\231\003'\176(#\179\154#\150\157\181\183\171\024\250"
-"Rule: ocaml: ml & cmi -> cmx & o (%=test_sequentielle )": "W\136\242\197\191mA|\231;\019k\142c\211\165"
-"Rule: ocaml: ml -> cmo & cmi (%=test_sequentielle )": "]j\205\232iP\003\180\tZ\024d<\250\236\220"
-"Rule: ocaml: cmx* & o* -> native (%=test_sequentielle )": "\153C\200\136{\031\031\128\206\188*\181e\255\170\131"
-"Resource: /Users/arthur/Documents/Drive Arthur/Travail/L3S2 ENS/Syste\204\128mes d'exploitation/Projet_OS/SequentialVersion/test_sequentielle.ml": "\189<\001\231\183\130<\233y\007EFb\172\199\158"

@@ -1,4 +1,3 @@
-(* #require "unix" *)
 
 module type S = sig
   type 'a process
@@ -15,9 +14,6 @@ end
 
 
 module Version_Unix :S = struct
-
-(* open Marshal
-   * open Unix *)
   
   type 'a process = (unit -> 'a)
 
@@ -105,6 +101,45 @@ module Example (K : S) = struct
       (fun (q_in, q_out) -> K.doco [ integers q_out ; output q_in ; ])
 end
 
-module Test = Example(Version_Unix);;
+module Crible (K : S) = struct 
+
+  module Lib = Lib(K)
+  open Lib
+
+  let integers (qo : int K.out_port) : unit K.process = 
+    let rec loop n =
+      (K.put n qo) >>= (fun () -> loop (n + 1))
+    in
+    loop 2
+  
+  let output (qi : int K.in_port) : unit K.process =
+    let rec loop () =
+      (K.get qi) >>= (fun v -> Printf.printf "%d\n" v; loop ())
+    in loop ()
+
+  let filter (prime:int) (qi: int K.in_port) (qo:int K.out_port) : unit K.process = 
+    let rec loop () = 
+      ( K.get qi) >>= 
+        (fun n -> if n mod prime <> 0 then (K.put n qo) >>= loop else loop ())
+    in loop ()
+
+
+  let rec sift (qi: int K.in_port) (qo:int K.out_port) : unit K.process = 
+      (K.get qi) >>= 
+        (fun prime -> (K.put prime qo) >>= 
+          (fun () -> delay K.new_channel () >>= 
+            (fun (q_in,q_out) -> K.doco [ filter prime qi q_out ; sift q_in qo])
+          )
+        )
+
+  let main : unit K.process = 
+    Printf.printf "Je commence";
+    (delay (fun () -> K.new_channel (),K.new_channel ()) () ) >>=
+      (fun ((q1_in, q1_out), (q2_in, q2_out)) -> K.doco [ integers q1_out; sift q1_in q2_out; output q2_in ])
+
+end 
+
+module Test = Crible(Version_Unix);;
 
 Version_Unix.run Test.main;;
+
