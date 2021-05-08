@@ -11,7 +11,7 @@ module type S = sig
   val run: 'a process -> 'a
 end
 
-module Monad = struct (* Inutile mais a servi à comprendre l'article *)
+module Monad = struct (* Inutile mais a servi à comprendre l'article de Koen *)
   type 'a m = ('a -> unit) -> unit
   let bind f k = fun c -> f (fun a -> k a c)
   let return x = fun c -> c x
@@ -39,16 +39,15 @@ module Monad = struct (* Inutile mais a servi à comprendre l'article *)
 
 end
 
-
 module VS : S  =
   struct
-    let process_list : (unit -> unit) Queue.t = Queue.create ()
+    let actions : (unit -> unit) Queue.t = Queue.create () (* Ensemble des actions à effectuer sous forme de queue *)
 
-    let suivant () =
-	    if Queue.is_empty process_list
+    let suivant () = (* Exécute la première action de la queue *)
+	    if Queue.is_empty actions
 	    then ()
-	    else Queue.pop process_list ()
-    let add c = Queue.push c process_list
+	    else Queue.pop actions ()
+    let add c = Queue.push c actions (* Ajoute une action à la queue *)
 
     type 'a process = ('a -> unit) -> unit
     type 'a in_port = 'a Queue.t
@@ -57,23 +56,29 @@ module VS : S  =
     let new_channel () =
       let q = Queue.create () in (q, q)
 
-    let put (a : 'a) (q : 'a out_port) (c : unit -> unit) =
-      add (fun () -> Queue.push a q; c ()) ;
+    (* c désigne une continuation *)
+    let put (a : 'a) (q : 'a out_port) (c : unit -> unit) = 
+      (* On ajoute à la queue l'action consistant à ajouter l'élément a à q puis à effectuer la continuation *)
+      add (fun () -> Queue.push a q; c ()) ; 
+      (* Puis on exécute l'action suivante *)
       suivant ()
 
     let rec get (q : 'a in_port) (c : 'a -> unit) =
-	    add
+	    (* On ajoute à la queue l'action consitant à appliquer la continuation au premier élément de q *)
+      add
 	      (fun () ->
 	        if Queue.is_empty q
+          (* Si q est vide, on ajoute à la queue l'action get q c. Avant que celle-ci soit effectuée à nouveau, toutes les autres actions auront été effectuée, ce qui permet d'attendre que q contienne un élément *)
 	        then get q c
 	        else c (Queue.pop q)) ;
       suivant ()
 
-    let rec doco (l : unit process list) (c : unit -> unit) = match l with
-      | [] -> suivant (); c ()
-      | p::q -> add (fun () -> p suivant); doco q c
+    let doco (l : unit process list) (c : unit -> unit) =
+        List.iter (fun p -> add (fun () -> p suivant)) l ;
+        ignore (suivant ()) ;
+        c ()
 
-    let return a = (fun f -> f a)
+    let return (a:'a) (c:'a -> unit) = c a
     let bind (p1 : 'a process) (fp2 : 'a -> 'b process) (c : 'b -> unit) = p1 (fun a -> (fp2 a) c)
 
     let run p = 
@@ -84,3 +89,76 @@ module VS : S  =
         | Some a -> a 
 
  end
+
+module Lib (K : S) = struct
+  let ( >>= ) x f = K.bind x f
+  let delay f x =
+    (K.return ()) >>= (fun () -> K.return (f x))
+end
+
+module Example (K : S) = struct
+  
+  module Lib = Lib(K)
+  open Lib
+     
+  let integers (qo : int K.out_port) : unit K.process = 
+    let rec loop n =
+      (K.put n qo) >>= (fun () -> loop (n + 1))
+    in
+    loop 2
+    
+  let output (qi : int K.in_port) : unit K.process =
+    let rec loop () =
+      (K.get qi) >>= (fun v -> Printf.printf "%d\n" v; loop ())
+    in
+    loop ()
+    
+  let main : unit K.process =
+    (delay K.new_channel ()) >>=
+      (fun (q_in, q_out) -> K.doco [ integers q_out ; output q_in ; ])
+end
+
+
+
+
+module Crible (K : S) = struct 
+
+  module Lib = Lib(K)
+  open Lib
+
+  let integers (qo : int K.out_port) : unit K.process = 
+    let rec loop n =
+      (K.put n qo) >>= (fun () -> loop (n + 1))
+    in
+    loop 2
+  
+  let output (qi : int K.in_port) : unit K.process =
+    let rec loop () =
+      (K.get qi) >>= (fun v -> Printf.printf "%d\n" v; loop ())
+    in loop ()
+
+  let filter (prime:int) (qi: int K.in_port) (qo:int K.out_port) : unit K.process = 
+    let rec loop () = 
+      ( K.get qi) >>= 
+        (fun n -> if n mod prime <> 0 then (K.put n qo) >>= loop else loop ())
+    in loop ()
+
+
+  let rec sift (qi: int K.in_port) (qo:int K.out_port) : unit K.process = 
+      (K.get qi) >>= 
+        (fun prime -> (K.put prime qo) >>= 
+          (fun () -> delay K.new_channel () >>= 
+            (fun (q_in,q_out) -> K.doco [ filter prime qi q_out ; sift q_in qo])
+          )
+        )
+
+  let main : unit K.process = 
+    Printf.printf "Je commence";
+    (delay (fun () -> K.new_channel (),K.new_channel ()) () ) >>=
+      (fun ((q1_in, q1_out), (q2_in, q2_out)) -> K.doco [ integers q1_out; sift q1_in q2_out; output q2_in ])
+
+end 
+
+module Test = Crible(VS);;
+
+VS.run Test.main;;
