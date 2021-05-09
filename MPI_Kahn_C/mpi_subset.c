@@ -7,9 +7,31 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-
 #include "mpi_subset.h"
 #include "kahn.h"
+
+/*      Implémentation de l'interface mpi_subset.h reposant sur l'implémentation de KPN
+
+        Objets encapsulés:
+            - _mpi_init         // indique si environnement MPI initié
+            - _mpi_size         // taille MPI_Comm_World
+            - _mpi_rank         // rang du processus au sein de MPI_Comm_World
+            - _mpi_channels_global  // tableau 2D de pointeurs vers des canaux de communication: 1 canal pour chaque paire de processus
+            - _mpi_barrier_channel  // canal permettant la synchronisation
+            - _mpi_barrier_counter  // entier communiqué entre processus via _mpi_barrier_channel
+            - _mpi_process_argument // structure de données passées aux processus MPI
+            - _kahn_to_mpi_datatype // conversion de MPI_Datatype à KAHN_DATATYPE
+
+        Fonctions internes:
+            - _mpi_getargs()    // parsing des arguments (recherche d'option -np, -n) et contrôle du nombre de slots disponibles (philosophie MPI: pas plus de processus que de slots)
+            - _mpi_allocate_channel()    // initie les canaux (appel à new_channel de KPN)
+            - _mpi_process()    // fonction élementaire processus MPI: change les variables de rang et de canaux attribués puis return (continue éxécution programme à la suite de l'appel MPI_Init)
+            - _mpi_split()      // lancement des processus MPI (appel à doco de KPN)
+        
+        MPI_Init()  // appel _mpi_args ; _mpi_allocate_channel ; _mpi_split
+        MPI_Send()  // appel put de KPN
+        MPI_Receive // appel get de KPN
+*/
 
 //#define DEBUG
 
@@ -18,7 +40,9 @@ static int _mpi_size = 1;
 static int _mpi_rank = 0;
 
 static int _mpi_getargs(int argc, char **argv)
-/* Parse arguments, get _mpi_size */
+/* 
+    Parsing des arguments, initie _mpi_size après vérification de la compatibilité avce le nombre de slots disponibles
+*/
 {
     while(argv++,--argc) {
         if (strcmp(*argv, "-n") == 0 || strcmp(*argv, "-np") == 0) {
@@ -75,7 +99,7 @@ static int _mpi_allocate_channels()
 return MPI_SUCCESS;
 }
 
-/* Structure de passage du rang et de canaux à un processus */
+/* Structure de passage du rang et des canaux à un processus */
 typedef struct _mpi_process_argument {
     channel **channels;
     int rank; 
@@ -84,7 +108,9 @@ typedef struct _mpi_process_argument {
 static channel **_mpi_channels;
 
 void _mpi_process(_mpi_process_argument *arg) 
-/* Processus élémentaire passé à doco: initie les variables rank et channels[] et termine (suivi par execution du reste du programme) */
+/* 
+    Processus élémentaire passé à doco: initie les variables rank et channels[] et termine (suivi par execution du reste du programme) 
+*/
 {   
 #ifdef DEBUG
     printf("_mpi_process initiation with rank = %d\n", arg->rank);
@@ -95,7 +121,7 @@ void _mpi_process(_mpi_process_argument *arg)
 }
 
 static int _mpi_split()
-/* Appel à doco */
+/* Appel de doco */
 {
     _mpi_channels = _mpi_channels_global[0];
 
@@ -123,7 +149,9 @@ static int _mpi_split()
 
 
 int MPI_Init(int argc, char **argv)
-/* Initiation de l'environnement MPI */
+/* 
+    Initiation de l'environnement MPI 
+*/
 {
     assert(_mpi_init == 0);
 
@@ -143,6 +171,9 @@ int MPI_Finalize(void)
 }
 
 int MPI_Comm_size(MPI_Comm comm, int *psize)
+/* 
+    Renvoi la taille du communicateur dans l'adresse psize
+*/
 {   
     assert(_mpi_init);
     assert(comm == MPI_COMM_WORLD);
@@ -153,6 +184,9 @@ int MPI_Comm_size(MPI_Comm comm, int *psize)
     return MPI_SUCCESS;
 }
 int MPI_Comm_rank(MPI_Comm comm, int *prank)
+/*
+    Renvoi le rang du processus appelant 
+*/
 {   
     assert(_mpi_init);
     assert(comm == MPI_COMM_WORLD);
@@ -166,6 +200,9 @@ int MPI_Comm_rank(MPI_Comm comm, int *prank)
 /* Point-to-point communication */
 
 Kahn_Datatype _khan2mpi_dtype(MPI_Datatype dtype)
+/*
+    Conversion de MPI_Datatype à Kahn_Datatype
+*/
 {
     switch (dtype)
     {
@@ -186,6 +223,10 @@ Kahn_Datatype _khan2mpi_dtype(MPI_Datatype dtype)
 }
 
 int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm comm)
+/*
+    Envoi un buffer au processus de rang dest 
+    tag non implémenté
+*/
 {  
 #ifdef DEBUG
     printf("Mpi_Send : cnt = %d, dest = %d, tag = %d\n", cnt, dest, tag);
@@ -199,13 +240,16 @@ int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm
     channel *chan = _mpi_channels[dest];
 
     put(buf, cnt, chan, _khan2mpi_dtype(dtype));
-
     
     return MPI_SUCCESS;
 }
 
 int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
- MPI_Comm comm, MPI_Status *pstat)
+ MPI_Comm comm)
+ /*
+    Reçoit un buffer du processus de rang src
+    tag non implémenté
+*/
  {
 
 #ifdef DEBUG
@@ -218,10 +262,6 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
     assert(tag >= 0);
     assert(comm == MPI_COMM_WORLD);
 
-    pstat->MPI_TAG = tag;
-    pstat->MPI_SOURCE = src;
-    pstat->MPI_ERROR = MPI_SUCCESS;
-
     channel *chan = _mpi_channels[src];
 
     get(buf, cnt, chan, _khan2mpi_dtype(dtype));
@@ -231,7 +271,10 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
  }
 
  int MPI_Barrier(void)
- {  
+ /* 
+    Synchronise les processus: bloquant tant que tous les processus n'y sont par arrivé
+*/
+{  
      get(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
      _mpi_barrier_counter ++;
      put(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);

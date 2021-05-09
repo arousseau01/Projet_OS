@@ -13,8 +13,7 @@ end
 
 module Version_Unix :S = struct
 
-(* open Marshal
-   * open Unix *)
+(* Implémentation de KPN reposant sur des processus Unix communiquant via des sockets  *)
   
   type 'a process = (unit -> 'a)
 
