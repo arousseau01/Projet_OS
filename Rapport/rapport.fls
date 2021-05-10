@@ -255,6 +255,9 @@ INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/esint/esint10.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/lm/ec-lmr12.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/lm/ec-lmbx12.tfm
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/lm/ec-lmbx12.tfm
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/lm/t1lmtt.fd
+INPUT /usr/local/texlive/2019/texmf-dist/tex/latex/lm/t1lmtt.fd
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/tfm/public/lm/ec-lmtt10.tfm
 OUTPUT /Users/arthur/Documents/Drive Arthur/Travail/L3S2 ENS/Systèmes d'exploitation/Projet_OS/Rapport/rapport.pdf
 INPUT /usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map
 INPUT /Users/arthur/Documents/Drive Arthur/Travail/L3S2 ENS/Systèmes d'exploitation/Projet_OS/Rapport/rapport.aux
@@ -263,3 +266,4 @@ INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmbx12.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmr10.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmr12.pfb
 INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmr17.pfb
+INPUT /usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmtt10.pfb

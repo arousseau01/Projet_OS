@@ -22,9 +22,12 @@
     \subsection{Version Unix}
     \subsection{Version sur le réseau}
     \subsection{Version séquentielle}
+        On utilise une queue pour stocker les actions à effectuer (notamment pour le \texttt{doco}), avec des fonctions \texttt{add} pour ajouter une action à la queue et \texttt{suivant} pour exécuter la première action de la queue.\\
+        La création d'un processus se ramène alors à \texttt{add} et l'exécution à \texttt{suivant}.
     \subsection{Version MPI}
     \section{Applications}
     \subsection{Crible}
+        Le crible présenté est inspiré de celui du TP5. Il fait passer chaque entier par une suite de filtres (\texttt{sift}), où chaque filtre teste la divisibilité par un nombre premier. Si on rencontre un nombre premier, on crée un nouveau filtre.
     \subsection{Algorithme de Strassen}
 
 \end{document}

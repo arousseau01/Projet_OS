@@ -114,7 +114,7 @@ module Crible (K : S) = struct
   
   let output (qi : int K.in_port) : unit K.process =
     let rec loop () =
-      (K.get qi) >>= (fun v -> Printf.printf "%d\n" v; loop ())
+      (K.get qi) >>= (fun v -> Format.printf "%d@." v; loop ())
     in loop ()
 
   let filter (prime:int) (qi: int K.in_port) (qo:int K.out_port) : unit K.process = 
@@ -133,7 +133,6 @@ module Crible (K : S) = struct
         )
 
   let main : unit K.process = 
-    Printf.printf "Je commence";
     (delay (fun () -> K.new_channel (),K.new_channel ()) () ) >>=
       (fun ((q1_in, q1_out), (q2_in, q2_out)) -> K.doco [ integers q1_out; sift q1_in q2_out; output q2_in ])
 
