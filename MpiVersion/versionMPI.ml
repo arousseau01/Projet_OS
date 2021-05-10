@@ -13,8 +13,10 @@ end
 
 module Version_Unix :S = struct
 
-(* open Marshal
-   * open Unix *)
+(* 
+Implémentation de KPN reposant sur le module MPI de OCaml 
+(https://github.com/xavierleroy/ocamlmpi) 
+*)
   
   type 'a process = (unit -> 'a)
 
@@ -31,6 +33,7 @@ module Version_Unix :S = struct
   let tag = ref 0
 
   let new_channel () =
+  (* channel : tag (entier) permettant d'identifier les communications *)
     let chan = !tag in
     tag := !tag + 1;
     chan, chan
@@ -54,11 +57,15 @@ module Version_Unix :S = struct
     (fun () ->
       let  size = Mpi.comm_size Mpi.comm_world in
       let  rank = Mpi.comm_rank  Mpi.comm_world in 
+
+      (* MPI limite le nombre de processus pouvant être lancés en parallèle au nombre de slots disponibles (nombre de coeurs, x2 si recourt à l'hyperthreading) *)
+
       if (List.length l) > (size + 1) then begin failwith "Error: too much process for the size of the communicator\n" end;
       
       let processes = (Array.of_list l) in
       if (rank + 1) <= (Array.length processes) then begin 
-          Printf.printf "%d: launching a process" rank ; print_newline () ;
+          (* Printf.printf "[%d] launching a process" rank ; print_newline () ; *)
           run processes.(rank) end
     )
+
 end

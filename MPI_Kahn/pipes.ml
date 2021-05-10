@@ -1,8 +1,7 @@
 module K : Kahn.S = struct
 
-(* open Marshal
-   * open Unix *)
-  
+(* Implémentation de KPN reposant sur des processus Unix communiquant via des pipes  *)
+
   type 'a process = (unit -> 'a)
 
   type 'a channel = { chan_out: out_channel;

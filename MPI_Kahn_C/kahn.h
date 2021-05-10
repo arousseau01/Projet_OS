@@ -1,25 +1,27 @@
-#include <sys/types.h>
-
 #ifndef KAHN_INCLUDED
 #define KAHN_INCLUDED
 
+/*      
+        Interface implémentation minimale permettant de construire des réseaux
+        de processus de Kahn.
+            - Kahn_Datatype // types mis à disposition pour les communications
+            - channel       // canaux de communication entre processus (pipes)
+            - new_channel() // fonction initiation d'un canal
+            - put()         // envoi sur un canal
+            - get()         // réception depuis un canal
+            - doco()        // éxécution parallèle d'une liste de processus
+*/
+
 typedef enum { 
+    KAHN_BYTE,
     KAHN_INT, 
     KAHN_FLOAT,
     KAHN_DOUBLE,
     KAHN_LONG_DOUBLE,
+    _nb_kahn_datatype,
 } Kahn_Datatype;
 
-static int _kahn_data_size[] = {
-    sizeof(int),
-    sizeof(float),
-    sizeof(double),
-    sizeof(long double)
-    };
-
 typedef void (*process)();
-
-    pid_t *pid_list;
 
 typedef struct Channel {
     int fd_in;
