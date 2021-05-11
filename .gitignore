@@ -16,3 +16,10 @@ _build/
 # ocamlbuild targets
 *.byte
 *.native
+
+# Latex 
+*.aux
+*.fls
+*.fdb_latexmk
+*.log
+*.synctex.gz
