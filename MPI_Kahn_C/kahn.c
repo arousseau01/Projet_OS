@@ -14,9 +14,12 @@
             - _kahn_data_size   // donne les tailles en octets des types utilisés
             - _pid_list         // liste des pid des processus forkés par doco
             - DEBUG             // si défini, affichage d'informations pour debugger
+            - _return_process() // fonction du processus retourné par return_()
 */
 
 //#define DEBUG
+
+/* ***   COMMUNICATION   *** */
 
 channel *new_channel() {
     channel *chan = (channel*) malloc(sizeof(channel));
@@ -37,7 +40,7 @@ static int _kahn_data_size[] = {
 void put(void *value, int cnt, channel *chan, Kahn_Datatype dtype) 
 {
 #ifdef DEBUG
-    printf("Kahn::put ; dtype = %d, size_value = %d\n", dtype, _kahn_data_size[dtype]);
+    printf("[%d] Kahn::put ; dtype = %d, size_value = %d\n", (int)getpid(), dtype, _kahn_data_size[dtype]);
 #endif
     assert((0 <= dtype) && (dtype < _nb_kahn_datatype));
     write(chan->fd_in, value,cnt* _kahn_data_size[dtype]);
@@ -46,40 +49,84 @@ void put(void *value, int cnt, channel *chan, Kahn_Datatype dtype)
 void get(void *value, int cnt,channel *chan, Kahn_Datatype dtype) 
 {
 #ifdef DEBUG
-    printf("Kahn::get ; dtype = %d, size_value = %d\n", dtype, _kahn_data_size[dtype]);
+    printf("[%d] Kahn::get ; dtype = %d, size_value = %d\n", (int)getpid(), dtype, _kahn_data_size[dtype]);
 #endif
     assert((0 <= dtype) && (dtype < _nb_kahn_datatype));
     while(read(chan->fd_out, value, cnt* _kahn_data_size[dtype]) == 0) {};
 }
 
+/* ***   RETURN BIND RUN *** */
 
-pid_t *_pid_list;
+void *_return_process(void *value)
+{
+    return value;
+}
 
-// Prend en entrée une liste de fonction et une liste d'arguments)
-void doco(int nb_proc, process processes[], void **arguments) {
+process *return_(void *value)
+{
+    process *p = malloc(sizeof(*p));
+    p->f = _return_process;
+    p->arg = value;
+    return p;
+}
+
+void *run(process *p)
+{
+    return (p->f)(p->arg);
+}
+
+process *bind(process *p1, process *p2)
+{
+    process *p = malloc(sizeof(*p));
+    p->f = p2->f;
+    p->arg = run(p1);
+    return p;
+}
+
+
+/* ***   DOCO   *** */
+
+int _nb_proc = 0;
+
+
+void doco(int nb_proc, process *processes[]) {
 
 #ifdef DEBUG
-    printf("Entering doco to fork %d processes\n", nb_proc);
+    printf("Entering doco, nb_proc = %d\n", nb_proc);
+    fflush(stdout);
 #endif
 
-    _pid_list = malloc(nb_proc*sizeof(pid_t));
-    int is_main = 1;
+    int wstatus;
 
-    for (int i=0; i<nb_proc; i++) {
-        if (!is_main) { break; }
+    if (nb_proc > 0){
 
         pid_t pid = fork();
         if (pid == 0) {
-            is_main = !is_main;
-            (*processes[i])(arguments[i]);
-        }
-        else { 
 
+            /* SON */
+            run(*processes);
+            return;
+        }
+        else {
+            /* FATHER */
 #ifdef DEBUG
-            printf("Creating [%d]\n", (int)pid);
-#endif
-            _pid_list[i] = pid;
+            printf("[%d]: creating [%d]\n", (int)getpid(), (int)pid);
+#endif  
+            _nb_proc++;
+            doco(--nb_proc, ++processes);
+            waitpid(pid, &wstatus, WUNTRACED);
+#ifdef DEBUG
+            printf("[%d] : [%d] ended\n", (int)getpid(), (int)pid);
+#endif            
         }
     }
-    //wait(NULL);
+
+    if (nb_proc == _nb_proc){
+#ifdef DEBUG
+        printf("[%d] end MPI program\n", (int)getpid());
+#endif     
+        exit(0);
+    }
+
+    return;
 }

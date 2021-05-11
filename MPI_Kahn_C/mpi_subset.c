@@ -107,7 +107,7 @@ typedef struct _mpi_process_argument {
 
 static channel **_mpi_channels;
 
-void _mpi_process(_mpi_process_argument *arg) 
+void *_mpi_process(_mpi_process_argument *arg) 
 /* 
     Processus élémentaire passé à doco: initie les variables rank et channels[] et termine (suivi par execution du reste du programme) 
 */
@@ -117,7 +117,7 @@ void _mpi_process(_mpi_process_argument *arg)
 #endif
     _mpi_rank = arg->rank;
     _mpi_channels = arg->channels;
-    return;
+    return 0;
 }
 
 static int _mpi_split()
@@ -128,21 +128,22 @@ static int _mpi_split()
     if (_mpi_size == 1) { return MPI_SUCCESS; } 
 
 #ifdef DEBUG
-    printf("_mpi_split : have to fork %d process(es)\n", _mpi_size-1);
+    printf("_mpi_split : have to fork %d process(es)\n", _mpi_size);
 #endif
 
-    process *processes = malloc((_mpi_size-1)* sizeof(process));
-    _mpi_process_argument **args = malloc((_mpi_size-1)* sizeof(*args));
+    process **processes = malloc(_mpi_size * sizeof(*processes));
 
-    for (int i=0; i<_mpi_size-1; i++) {
-        processes[i] = _mpi_process;
+    for (int i=0; i<_mpi_size; i++) {
         _mpi_process_argument *arg = malloc(sizeof(_mpi_process_argument));
         arg->rank = i+1;
         arg->channels = _mpi_channels_global[i+1];
-        args[i] = arg;
+
+        processes[i] = malloc(sizeof(**processes));
+        processes[i]->f     = _mpi_process;
+        processes[i]->arg   = arg;
     }
     
-    doco(_mpi_size-1, processes,(void **)args);
+    doco(_mpi_size, processes);
 
     return MPI_SUCCESS;
 }

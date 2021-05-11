@@ -40,7 +40,7 @@ static int _kahn_data_size[] = {
 void put(void *value, int cnt, channel *chan, Kahn_Datatype dtype) 
 {
 #ifdef DEBUG
-    printf("Kahn::put ; dtype = %d, size_value = %d\n", dtype, _kahn_data_size[dtype]);
+    printf("[%d] Kahn::put ; dtype = %d, size_value = %d\n", (int)getpid(), dtype, _kahn_data_size[dtype]);
 #endif
     assert((0 <= dtype) && (dtype < _nb_kahn_datatype));
     write(chan->fd_in, value,cnt* _kahn_data_size[dtype]);
@@ -49,7 +49,7 @@ void put(void *value, int cnt, channel *chan, Kahn_Datatype dtype)
 void get(void *value, int cnt,channel *chan, Kahn_Datatype dtype) 
 {
 #ifdef DEBUG
-    printf("Kahn::get ; dtype = %d, size_value = %d\n", dtype, _kahn_data_size[dtype]);
+    printf("[%d] Kahn::get ; dtype = %d, size_value = %d\n", (int)getpid(), dtype, _kahn_data_size[dtype]);
 #endif
     assert((0 <= dtype) && (dtype < _nb_kahn_datatype));
     while(read(chan->fd_out, value, cnt* _kahn_data_size[dtype]) == 0) {};
@@ -89,26 +89,24 @@ process *bind(process *p1, process *p2)
 void doco(int nb_proc, process *processes[]) {
 
 #ifdef DEBUG
-    printf("Entering doco to launch %d processes (%d fork)\n", nb_proc, nb_proc-1);
+    printf("Entering doco, nb_proc = %d\n", nb_proc);
     fflush(stdout);
 #endif
 
-    int is_main = 1;
-
-    for (int i=0; i<nb_proc; i++) {
-        if (!is_main) { break; }
-
+    if (nb_proc > 0){
         pid_t pid = fork();
         if (pid == 0) {
-            is_main = !is_main;
-            run(processes[i]);
+            /* SON */
+            run(*processes);
+            exit(0);
         }
-        else { 
+        else {
+            /* FATHER */
 #ifdef DEBUG
             printf("Creating [%d]\n", (int)pid);
 #endif
+            doco(--nb_proc, ++processes);
+            wait(NULL);
         }
     }
-
-    wait(NULL);
 }

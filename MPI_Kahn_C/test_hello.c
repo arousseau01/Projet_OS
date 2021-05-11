@@ -15,7 +15,7 @@ int main(int argc, char** argv){
 
     printf("Hello from process %d of %d\n", comm_rank+1, comm_size);
 
-    MPI_Barrier();
+    //MPI_Barrier();
 
     printf("Good bye from process %d of %d\n", comm_rank+1, comm_size);
     

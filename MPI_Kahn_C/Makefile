@@ -29,11 +29,5 @@ test_pi: test_pi.o kahn.o mpi_subset.o
 test_pi_benchmark: test_pi_benchmark.o kahn.o mpi_subset.o
 	$(CC) -o $@ $^ $(CFLAGS)
 
-    kahn.o: kahn.c kahn.h
-	$(CC) $< $(CFLAGS) -c -o $@
-
-mpi_subset.o: mpi_subset.c mpi_subset.h
-	$(CC) $< $(CFLAGS) -c -o $@
-
 clean: 
 	rm *.o test_pi test_pi_benchmark test_hello
