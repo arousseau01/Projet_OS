@@ -162,7 +162,7 @@ module Strassen (K : S) = struct
   module Lib = Lib(K)
   open Lib
 
-  let scalar (n:int) (a:int array array) = 
+  let scalar (n:int) (a:int array array) = (* renvoie n*a *)
     let a' = Array.make_matrix (Array.length a) (Array.length a.(0)) 0 in 
     for i = 0 to Array.length a - 1 do
       for j=0 to Array.length a.(0) -1 do
@@ -171,7 +171,7 @@ module Strassen (K : S) = struct
     done;
     a'
   
-  let add (a:int array array) (b:int array array) = 
+  let add (a:int array array) (b:int array array) = (* renvoie a+b *)
     if Array.length a <> Array.length b || Array.length a.(0) <> Array.length b.(0) 
       then failwith "Pas la bonne taille (somme)"
     else let c = Array.make_matrix (Array.length a) (Array.length a.(0)) 0 in 
@@ -182,9 +182,10 @@ module Strassen (K : S) = struct
     done;
     c
 
-  let sub (a:int array array) (b:int array array) = add a (scalar (-1) b)
+  let sub (a:int array array) (b:int array array) = (* renvoie a-b *)
+    add a (scalar (-1) b)
 
-  let cut (a:int array array) =
+  let cut (a:int array array) = (* Découpe a en 4 carrés de taille taille(a)/2 *)
     let na,ma = Array.length a,Array.length a.(0) in 
     let na',ma' = na/2,ma/2 in 
     let a1,a2,a3,a4 = Array.make_matrix na' ma' 0, Array.make_matrix na' ma' 0, Array.make_matrix na' ma' 0, Array.make_matrix na' ma' 0 in 
@@ -206,7 +207,7 @@ module Strassen (K : S) = struct
     done;
     a1,a2,a3,a4
 
-  let concat c11 c12 c21 c22 = 
+  let concat c11 c12 c21 c22 = (* Concatène 4 petits carrés en une grande matrice *)
     let n = Array.length c11 in 
     let c = Array.make_matrix (2*n) (2*n) 0 in 
     for i = 0 to n-1 do 
@@ -227,7 +228,7 @@ module Strassen (K : S) = struct
     done;
     K.return c 
 
-  let impression (a:int array array) = 
+  let impression (a:int array array) = (* Print une matrice *)
     K.return (
     let n,m = Array.length a, Array.length a.(0) in 
     for i=0 to n-1 do 
@@ -238,7 +239,7 @@ module Strassen (K : S) = struct
     done;
     )
 
-  let rec mat_mult_p2 (a:int array array) (b:int array array) =
+  let rec mat_mult_p2 (a:int array array) (b:int array array) = (* Multiplie récursivement 2 matrices de taille 2^p avec l'algorithme de Strassen*)
     let na,ma,nb,mb = Array.length a,Array.length a.(0),Array.length b, Array.length b.(0) in 
     if na<>ma || na<>nb || na<>mb 
       then failwith "Pas la bonne taille (produit)"
@@ -257,12 +258,61 @@ module Strassen (K : S) = struct
       let p7 = K.return (m7:=K.run (mat_mult_p2 (sub a12 a22) (add b21 b22))) in 
       (K.doco [p1;p2;p3;p4;p5;p6;p7]) >>= (fun () -> concat (add (add !m1 !m4) (sub !m7 !m5)) (add !m3 !m5) (add !m2 !m4) (add (sub !m1 !m2) (add !m3 !m6)) )
 
+  let rec puissance2 n = 
+    if n=0 then 1 else 
+    let a = (puissance2 (n/2)) in 
+    if n mod 2 = 0 then a*a else a*a*2
+
+  let log2 n = 
+    let k = ref(0) in 
+    let a = ref(1) in 
+    while n > !a do 
+      incr k; a:=2*(!a);
+    done;
+    !k
+  
+  let restrict c nc mc = (* Renvoit la matrice c.(0:nc-1).(0:mc-1) *)
+    let c' = Array.make_matrix nc mc 0 in 
+    for i=0 to nc-1 do 
+      for j=0 to mc-1 do 
+        c'.(i).(j) <- c.(i).(j)
+      done;
+    done;
+    c'
+
+
+  let mat_mult (a:int array array) (b:int array array) = (* Multiplie deux matrices par algorithme de Strassen *)
+    let na,ma,nb,mb = Array.length a,Array.length a.(0),Array.length b, Array.length b.(0) in 
+    if ma <> nb 
+      then failwith "Pas la bonne taille (produit qcq)"
+    else 
+      let n = max (max na ma) (max nb mb) in 
+      let k = log2 n in 
+      let n' = puissance2 k in 
+      let a0,b0=Array.make_matrix n' n' 0,Array.make_matrix n' n' 0 in 
+      for i=0 to na-1 do
+        for j=0 to ma-1 do
+          a0.(i).(j) <- a.(i).(j)
+        done; 
+      done;
+      for i=0 to nb-1 do
+        for j=0 to mb-1 do
+          b0.(i).(j) <- b.(i).(j)
+        done; 
+      done;
+      (mat_mult_p2 a0 b0) >>= (fun c -> K.return (restrict c na mb))
+
 end
 
 let a1=[|[|1|]|]
 let a2=[|
   [|1;0|];
   [|0;1|]
+|]
+let a3=[| 
+  [|1;2;3|];
+  [|4;5;6|];
+  [|7;8;9|]
 |]
 let a4=[| 
   [|1;2;3;4|];
@@ -276,6 +326,11 @@ let b2=[|
   [|1;0|];
   [|0;1|]
 |]
+let b3=[| 
+  [|1;0;0|];
+  [|0;1;0|];
+  [|0;0;1|]
+|]
 let b4=[| 
   [|1;0;0;0|];
   [|0;1;0;0|];
@@ -285,4 +340,4 @@ let b4=[|
 
 module Test = Strassen(VS);;
 
-VS.run (Test.impression (VS.run (Test.mat_mult_p2 a4 b4)));;
+VS.run (Test.impression (VS.run (Test.mat_mult a3 b3)));;
