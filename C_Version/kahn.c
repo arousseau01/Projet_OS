@@ -86,27 +86,35 @@ process *bind(process *p1, process *p2)
 
 /* ***   DOCO   *** */
 
+int _kahn_is_main = 1;
+
 void doco(int nb_proc, process *processes[]) {
 
 #ifdef DEBUG
-    printf("Entering doco, nb_proc = %d\n", nb_proc);
+    printf("[%d] Entering doco, nb_proc = %d\n", (int)getpid(),nb_proc);
     fflush(stdout);
 #endif
 
-    if (nb_proc > 0){
+    if (nb_proc > 0) {
         pid_t pid = fork();
         if (pid == 0) {
             /* SON */
+            _kahn_is_main = !_kahn_is_main;
             run(*processes);
-            exit(0);
         }
         else {
             /* FATHER */
 #ifdef DEBUG
-            printf("Creating [%d]\n", (int)pid);
+            printf("[%d] Creating [%d]\n", (int)getpid(), (int)pid);
 #endif
             doco(--nb_proc, ++processes);
+
+            if (!_kahn_is_main) {return; }
+
             wait(NULL);
+#ifdef DEBUG
+            printf("[%d] Something has ended\n", (int)getpid());
+#endif
         }
     }
 }

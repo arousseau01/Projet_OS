@@ -6,6 +6,7 @@
 #include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include "mpi_subset.h"
 #include "kahn.h"
@@ -106,6 +107,8 @@ typedef struct _mpi_process_argument {
 } _mpi_process_argument;
 
 static channel **_mpi_channels;
+int _mpi_is_main = 1;
+
 
 void *_mpi_process(_mpi_process_argument *arg) 
 /* 
@@ -117,6 +120,7 @@ void *_mpi_process(_mpi_process_argument *arg)
 #endif
     _mpi_rank = arg->rank;
     _mpi_channels = arg->channels;
+    _mpi_is_main = !_mpi_is_main;
     return 0;
 }
 
@@ -135,8 +139,8 @@ static int _mpi_split()
 
     for (int i=0; i<_mpi_size; i++) {
         _mpi_process_argument *arg = malloc(sizeof(_mpi_process_argument));
-        arg->rank = i+1;
-        arg->channels = _mpi_channels_global[i+1];
+        arg->rank = i;
+        arg->channels = _mpi_channels_global[i];
 
         processes[i] = malloc(sizeof(**processes));
         processes[i]->f     = _mpi_process;
@@ -144,6 +148,10 @@ static int _mpi_split()
     }
     
     doco(_mpi_size, processes);
+
+    if (_mpi_is_main) {
+        exit(0);
+    }
 
     return MPI_SUCCESS;
 }
@@ -230,7 +238,7 @@ int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm
 */
 {  
 #ifdef DEBUG
-    printf("Mpi_Send : cnt = %d, dest = %d, tag = %d\n", cnt, dest, tag);
+    printf("[%d] Mpi_Send : cnt = %d, dest = %d, tag = %d\n", _mpi_rank, cnt, dest, tag);
 #endif
     assert(_mpi_init);
     assert(buf != NULL);
@@ -254,7 +262,7 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
  {
 
 #ifdef DEBUG
-    printf("Mpi_Receive : cnt = %d, src = %d, tag = %d\n", cnt, src, tag);
+    printf("[%d] Mpi_Receive : cnt = %d, dtype = %d,  src = %d, tag = %d\n", _mpi_rank, dtype,  cnt, src, tag);
 #endif
 
     assert(_mpi_init);
