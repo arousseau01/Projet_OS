@@ -1,33 +1,38 @@
-CC = gcc
-CFLAGS += -Wall -g -Wextra
+CC 		= gcc
+CFLAGS 	+= -Wall -g -Wextra
+INCLUDE += -I./lib
+LDLIB	+= -L./lib -lmpi_subset
 
-.PHONY: clean	
+LIB 	= ./lib
+TEST 	= ./test
 
-all: test_hello test_pi test_pi_benchmark
+.PHONY: clean run_hello run_pi
 
-test_hello.o: test_hello.c kahn.h mpi_subset.h
-	$(CC) $< $(CFLAGS) -c -o $@ 
+LIST_TEST = $(TEST)/test_hello $(TEST)/test_pi
 
-test_pi.o: test_pi.c kahn.h mpi_subset.h
-	$(CC) $< $(CFLAGS) -c -o $@ 
+all: $(LIB)/libmpi_subset.a $(LIST_TEST)
 
-test_pi_benchmark.o: test_pi_benchmark.c kahn.h mpi_subset.h
-	$(CC) $< $(CFLAGS) -c -o $@ 
-
-kahn.o: kahn.c kahn.h
+$(LIB)/kahn.o: $(LIB)/kahn.c $(LIB)/kahn.h
 	$(CC) $< $(CFLAGS) -c -o $@
 
-mpi_subset.o: mpi_subset.c mpi_subset.h
+$(LIB)/mpi_subset.o: $(LIB)/mpi_subset.c $(LIB)/mpi_subset.h
 	$(CC) $< $(CFLAGS) -c -o $@
 
-test_hello: test_hello.o kahn.o mpi_subset.o
-	$(CC) -o $@ $^ $(CFLAGS)
+$(LIB)/libmpi_subset.a: $(LIB)/kahn.o $(LIB)/mpi_subset.o
+	ar rcu $@ $+
+	ranlib $@
 
-test_pi: test_pi.o kahn.o mpi_subset.o
-	$(CC) -o $@ $^ $(CFLAGS)
+$(TEST)/%: $(TEST)/%.o $(LIB)/libmpi_subset.a
+	$(CC) $< $(CFLAGS) -o $@  $(LDLIB)
 
-test_pi_benchmark: test_pi_benchmark.o kahn.o mpi_subset.o
-	$(CC) -o $@ $^ $(CFLAGS)
+$(TEST)/%.o: $(TEST)/%.c 
+	$(CC) $< $(CFLAGS) -c -o $@ $(INCLUDE)
+
+run-hello:
+	$(TEST)/test_hello -np 4
+
+run-pi:
+	$(TEST)/test_pi -np 4
 
 clean: 
-	rm *.o test_pi test_pi_benchmark test_hello
+	rm $(TEST)/*.o $(LIB)/*.o $(LIST_TEST) $(LIB)/*.a

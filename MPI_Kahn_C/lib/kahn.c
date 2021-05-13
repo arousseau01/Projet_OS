@@ -109,6 +109,7 @@ void doco(int nb_proc, process *processes[]) {
 #endif
             doco(--nb_proc, ++processes);
 
+/* Seul le processus initial attend ses enfants */
             if (!_kahn_is_main) {return; }
 
             wait(NULL);
