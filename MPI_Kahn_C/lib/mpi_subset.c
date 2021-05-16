@@ -34,7 +34,7 @@
         MPI_Receive // appel get de KPN
 */
 
-//#define DEBUG
+#define DEBUG
 
 static int _mpi_init = 0;
 static int _mpi_size = 1;
@@ -51,7 +51,7 @@ static int _mpi_getargs(int argc, char **argv)
                 _mpi_size = (int)strtol((const char *)*(++argv), NULL, 10);
                 argc--;
                 if (_mpi_size > get_nprocs()) {
-                    printf("There are not enough slots available in the system to satisfy the %d slots that were requested (%d slots available only)\n", 
+                    printf("MPI\t[error] There are not enough slots available in the system to satisfy the %d slots that were requested (%d slots available only)\n", 
                     _mpi_size, get_nprocs());
                     exit(1);
                 } 
@@ -59,7 +59,7 @@ static int _mpi_getargs(int argc, char **argv)
         }
     }
 #ifdef DEBUG
-    printf("_mpi_args SUCESS, _mpi_size = %d\n", _mpi_size);
+    printf("MPI\t[init] _mpi_args SUCESS, _mpi_size = %d\n", _mpi_size);
 #endif
 return MPI_SUCCESS;
 }
@@ -95,7 +95,7 @@ static int _mpi_allocate_channels()
     put(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
 
 #ifdef DEBUG
-    printf("_mpi_allocate_channels\n");
+    printf("MPI\t[init] _mpi_allocate_channels\n");
 #endif
 return MPI_SUCCESS;
 }
@@ -116,7 +116,7 @@ void *_mpi_process(_mpi_process_argument *arg)
 */
 {   
 #ifdef DEBUG
-    printf("_mpi_process initiation with rank = %d\n", arg->rank);
+    printf("MPI\t[init] _mpi_process initiation with rank = %d\n", arg->rank);
 #endif
     _mpi_rank = arg->rank;
     _mpi_channels = arg->channels;
@@ -132,7 +132,7 @@ static int _mpi_split()
     if (_mpi_size == 1) { return MPI_SUCCESS; } 
 
 #ifdef DEBUG
-    printf("_mpi_split : have to fork %d process(es)\n", _mpi_size);
+    printf("MPI\t[init] _mpi_split : have to fork %d process(es)\n", _mpi_size);
 #endif
 
     process **processes = malloc(_mpi_size * sizeof(*processes));
@@ -215,16 +215,12 @@ Kahn_Datatype _khan2mpi_dtype(MPI_Datatype dtype)
 {
     switch (dtype)
     {
-    case MPI_BYTE:
-        return KAHN_BYTE;
     case MPI_INT:
         return KAHN_INT;
     case MPI_FLOAT:
         return KAHN_FLOAT;
     case MPI_DOUBLE:
         return KAHN_DOUBLE;
-    case MPI_LONG_DOUBLE:
-        return KAHN_LONG_DOUBLE;
     
     default:
         return KAHN_INT;
@@ -238,7 +234,7 @@ int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm
 */
 {  
 #ifdef DEBUG
-    printf("[%d] Mpi_Send : cnt = %d, dest = %d, tag = %d\n", _mpi_rank, cnt, dest, tag);
+    printf("MPI\t[%d] Mpi_Send : cnt = %d, dest = %d\n", _mpi_rank, cnt, dest);
 #endif
     assert(_mpi_init);
     assert(buf != NULL);
@@ -253,8 +249,8 @@ int MPI_Send(void *buf, int cnt, MPI_Datatype dtype, int dest, int tag, MPI_Comm
     return MPI_SUCCESS;
 }
 
-int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
- MPI_Comm comm)
+int MPI_Recv(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
+ MPI_Comm comm, MPI_Status *status)
  /*
     Reçoit un buffer du processus de rang src
     tag non implémenté
@@ -262,7 +258,7 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
  {
 
 #ifdef DEBUG
-    printf("[%d] Mpi_Receive : cnt = %d, dtype = %d,  src = %d, tag = %d\n", _mpi_rank, dtype,  cnt, src, tag);
+    printf("MPI\t[%d] Mpi_Receive : cnt = %d, src = %d\n", _mpi_rank, cnt, src);
 #endif
 
     assert(_mpi_init);
@@ -270,6 +266,7 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
     assert(src >= 0 && src < _mpi_size && src != _mpi_rank);
     assert(tag >= 0);
     assert(comm == MPI_COMM_WORLD);
+    assert(status != NULL);
 
     channel *chan = _mpi_channels[src];
 
@@ -279,17 +276,20 @@ int MPI_Receive(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
     return MPI_SUCCESS;
  }
 
- int MPI_Barrier(void)
+ int MPI_Barrier(MPI_Comm comm)
  /* 
     Synchronise les processus: bloquant tant que tous les processus n'y sont par arrivé
 */
 {  
-     get(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
+    assert(_mpi_init);
+    assert(comm == MPI_COMM_WORLD);
+
+    get(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
      _mpi_barrier_counter ++;
-     put(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
+    put(&_mpi_barrier_counter, 1, _mpi_barrier_channel, KAHN_INT);
 
 #ifdef DEBUG
-    printf("[%d][%d] MPI_Barrier : _mpi_barrier_counter = %d\n", (int)getpid(), _mpi_rank, _mpi_barrier_counter);
+    printf("MPI[%d] MPI_Barrier : _mpi_barrier_counter = %d\n",  _mpi_rank, _mpi_barrier_counter);
 #endif
 
      while((_mpi_barrier_counter % _mpi_size) != 0) {

@@ -10,6 +10,7 @@ int main(int argc, char **argv)
 {
     int rank, size, istart, istop;
 
+    MPI_Status status;
     MPI_Comm comm;
     comm = MPI_COMM_WORLD;
 
@@ -39,7 +40,7 @@ int main(int argc, char **argv)
         for (int source = 1; source < size; source++)
         { 
             int tag = 0;
-            MPI_Receive(&receive_pi, 1, MPI_DOUBLE, source, tag, comm);
+            MPI_Recv(&receive_pi, 1, MPI_DOUBLE, source, tag, comm, &status);
 
             printf("[0] receiving %f from %d\n", receive_pi, source);
 

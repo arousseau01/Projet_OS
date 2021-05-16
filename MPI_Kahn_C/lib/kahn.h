@@ -13,11 +13,9 @@
 */
 
 typedef enum { 
-    KAHN_BYTE,
     KAHN_INT, 
     KAHN_FLOAT,
     KAHN_DOUBLE,
-    KAHN_LONG_DOUBLE,
     _nb_kahn_datatype,
 } Kahn_Datatype;
 

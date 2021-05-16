@@ -34,25 +34,46 @@ static int _kahn_data_size[] = {
     sizeof(int),
     sizeof(float),
     sizeof(double),
-    sizeof(long double)
     };
     
 void put(void *value, int cnt, channel *chan, Kahn_Datatype dtype) 
 {
 #ifdef DEBUG
-    printf("[%d] Kahn::put ; dtype = %d, size_value = %d\n", (int)getpid(), dtype, _kahn_data_size[dtype]);
+    printf("KAHN\t[%d] Entering PUT ; cnt = %d\n", (int)getpid(), cnt);
+
 #endif
     assert((0 <= dtype) && (dtype < _nb_kahn_datatype));
-    write(chan->fd_in, value,cnt* _kahn_data_size[dtype]);
+
+    int total_write = 0;
+    total_write = write(chan->fd_in, value,cnt* _kahn_data_size[dtype]);
+    total_write = total_write;
+#ifdef DEBUG
+    printf("KAHN\t[%d] Exiting PUT ; cnt_write = %d\n", (int)getpid(), total_write/_kahn_data_size[dtype]);
+#endif
 }
 
 void get(void *value, int cnt,channel *chan, Kahn_Datatype dtype) 
+/*
+    Buffered read
+*/
 {
 #ifdef DEBUG
-    printf("[%d] Kahn::get ; dtype = %d, size_value = %d\n", (int)getpid(), dtype, _kahn_data_size[dtype]);
+    printf("KAHN\t[%d] Entering GET ; cnt = %d\n", (int)getpid(), cnt);
 #endif
     assert((0 <= dtype) && (dtype < _nb_kahn_datatype));
-    while(read(chan->fd_out, value, cnt* _kahn_data_size[dtype]) == 0) {};
+
+    int total_read = 0;
+
+    while(total_read < cnt* _kahn_data_size[dtype]) {
+        total_read += read(chan->fd_out, value+(total_read/_kahn_data_size[dtype]), cnt* _kahn_data_size[dtype] - total_read);
+    }
+
+    //while(read(chan->fd_out, value, cnt* _kahn_data_size[dtype]) == 0) {};
+
+
+#ifdef DEBUG
+    printf("KAHN\t[%d] Exiting GET ; cnt_read = %d\n", (int)getpid(), total_read/_kahn_data_size[dtype]);
+#endif
 }
 
 /* ***   RETURN BIND RUN *** */
@@ -91,7 +112,7 @@ int _kahn_is_main = 1;
 void doco(int nb_proc, process *processes[]) {
 
 #ifdef DEBUG
-    printf("[%d] Entering doco, nb_proc = %d\n", (int)getpid(),nb_proc);
+    printf("KAHN\t[%d] Entering doco, nb_proc = %d\n", (int)getpid(),nb_proc);
     fflush(stdout);
 #endif
 
@@ -105,7 +126,7 @@ void doco(int nb_proc, process *processes[]) {
         else {
             /* FATHER */
 #ifdef DEBUG
-            printf("[%d] Creating [%d]\n", (int)getpid(), (int)pid);
+            printf("KAHN\t[%d] Creating [%d]\n", (int)getpid(), (int)pid);
 #endif
             doco(--nb_proc, ++processes);
 
@@ -114,7 +135,7 @@ void doco(int nb_proc, process *processes[]) {
 
             wait(NULL);
 #ifdef DEBUG
-            printf("[%d] Something has ended\n", (int)getpid());
+            printf("KAHN\t[%d] Something has ended\n", (int)getpid());
 #endif
         }
     }
