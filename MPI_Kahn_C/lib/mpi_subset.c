@@ -34,7 +34,7 @@
         MPI_Receive // appel get de KPN
 */
 
-#define DEBUG
+//#define DEBUG
 
 static int _mpi_init = 0;
 static int _mpi_size = 1;

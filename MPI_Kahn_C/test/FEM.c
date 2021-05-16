@@ -2,7 +2,24 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
-#include <netcdf.h>
+#include <netcdf.h>     // écriture données
+#include <sys/time.h>   // bench-marking
+
+/*      FEM.c
+
+    Script de résolution de l'équation de d'Alembert pour des ondes sismiques en milieu non dispersif non absorbant homogène, dérivé en 3 variantes:
+                - FEM.c         // script de base, calcul non parallèle
+                - FEM_MPI.c     // script parallélisé appelant mpi_subset.h
+                - FEM_MPI_REF.c // script parraléliséa appelant mpi.h (nécésitte d'avoi une implémentation de MPI installée)
+
+    a parallélisation se fait sur 4 coeurs avec uniquemnt communications point-à-point.
+
+    Ces 3 scripts écrivent leurs résultats sous format netCDF, pas d'implémentation d'écriture parallèle, les scripts parallélisés n'écrivent qu'un quart des données
+    Les données peuvent être visualisées avec l'utilitaire ncview.
+
+    La variable de préprocesseur DEBUG permet de controler le niveau de verbose.
+    La variable de préprocesseur TIMER permet de mesurer le temps de calcul.
+*/
 
 #define N_SPACE     300
 #define N_TIME      1000
@@ -13,6 +30,7 @@
 #define ERR(e) {printf("Error: %s\n", nc_strerror(e)); return 2;}
 
 //#define DEBUG
+#define TIMER
 
 // int main(int argc, char **argv)
 int main()
@@ -32,6 +50,8 @@ int main()
     printf("Discrétisation simulation:\n\tN_space\t=\t%d\n\tN_time\t=\t%d\n", N_SPACE, N_TIME);
     printf("Paramètres de la simulation:\n\tc\t=\t%g m/s\n\tdx\t=\t%g m\n\tdt\t=\t%g s\n",c, dx, dt);
     printf("Durée de la simulation\t%g s\n", T);
+    printf("Fichier écriture données\t%s\n\n", FILE_NAME);
+
 
     float field_old[N_SPACE][N_SPACE],
             field[N_SPACE][N_SPACE],
@@ -100,12 +120,17 @@ int main()
     count[2]    = N_SPACE;
     count[0]    = 1;
 
+#ifdef TIMER
+    // Bench-marking
+    struct timeval t1, t2;
+    double elapsedTime;
+    gettimeofday(&t1, NULL);
+#endif
+
     for (int t=0; t<N_TIME; t++) {
 
-        printf("Entrée itération [%d]\n", t);
 #ifdef DEBUG
-        printf("source[t] =\t%g\n", source[t]);
-        printf("u[source][t] =\t%g\n", field_new[src_idx_x][src_idx_y]);
+        printf("Entrée itération [%d]\n", t);
 #endif
         
         // Résolution approchée équation de D'Alembert
@@ -146,6 +171,13 @@ int main()
             }
         }
     }
+
+#ifdef TIMER
+    gettimeofday(&t2, NULL);
+    elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
+    elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
+    printf("Temps total (hors initiation) %f ms.\n", elapsedTime);
+#endif
 
     return 0;
 }

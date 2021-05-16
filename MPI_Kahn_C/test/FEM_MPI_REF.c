@@ -4,9 +4,27 @@
 #include <assert.h>
 #include <netcdf.h>
 #include <string.h>
+#include <sys/time.h>   // bench-marking
+
 
 //#include <mpi_subset.h>
 #include <mpi.h>
+
+/*      FEM_MPI_REF.c
+
+    Script de résolution de l'équation de d'Alembert pour des ondes sismiques en milieu non dispersif non absorbant homogène, dérivé en 3 variantes:
+                - FEM.c         // script de base, calcul non parallèle
+                - FEM_MPI.c     // script parallélisé appelant mpi_subset.h
+                - FEM_MPI_REF.c // script parraléliséa appelant mpi.h (nécésitte d'avoi une implémentation de MPI installée)
+
+    a parallélisation se fait sur 4 coeurs avec uniquemnt communications point-à-point.
+
+    Ces 3 scripts écrivent leurs résultats sous format netCDF, pas d'implémentation d'écriture parallèle, les scripts parallélisés n'écrivent qu'un quart des données
+    Les données peuvent être visualisées avec l'utilitaire ncview.
+
+    Les variables de préprocesseurs DEBUG et EXPLICIT_ECHANGE permettent de controler le niveau de verbose.
+    La variable de préprocesseur TIMER permet de mesurer le temps de calcul.
+*/
 
 
 #define N_SPACE     300
@@ -21,7 +39,8 @@
 
 
 //#define DEBUG
-#define EXPLICIT_ECHANGE
+//#define EXPLICIT_ECHANGE
+#define TIMER
 
 int main()
 //int main(int argc, char** argv)
@@ -57,8 +76,8 @@ int main()
         printf("Discrétisation simulation:\n\tN_space\t=\t%d\n\tN_time\t=\t%d\n", N_SPACE, N_TIME);
         printf("Paramètres de la simulation:\n\tc\t=\t%g m/s\n\tdx\t=\t%g m\n\tdt\t=\t%g s\n",c, dx, dt);
         printf("Durée de la simulation\t%g s\n", T);
-        printf("Nombre de processus MPI\t%d\n\n", size);
-        printf("Fichier écriture données\t%s\n", FILE_NAME);
+        printf("Nombre de processus MPI\t%d\n", size);
+        printf("Fichier écriture données\t%s\n\n", FILE_NAME);
     }
 
     float d2_field_x, d2_field_y;
@@ -117,12 +136,8 @@ int main()
     // MPI_Info info=MPI_INFO_NULL;
 
     if (rank == 0) {
-    printf("[%d] opening parallel NetCDF file...\n", rank);
 
-    // if ((retval = nc_create_par(FILE_NAME, NC_PNETCDF|NC_CLOBBER, MPI_COMM_WORLD, info, &nc_id))){ERR(retval);}
     if ((retval = nc_create(FILE_NAME, NC_CLOBBER, &nc_id))){ERR(retval);}
-
-    printf("[%d] parallel NetCDF file opened\n", rank);
 
     if ((retval = nc_def_dim(nc_id, "x", N_SPACE, &x_dimid))){ERR(retval);}
     if ((retval = nc_def_dim(nc_id, "y", N_SPACE, &y_dimid))){ERR(retval);}
@@ -164,15 +179,19 @@ int main()
     printf("[%d] Communication: side1 = %d ; side2 = %d\n", rank, side1, side2);
 #endif
 
+#ifdef TIMER
+    // Bench-marking
+    struct timeval t1, t2;
+    double elapsedTime;
+    gettimeofday(&t1, NULL);
+#endif
+
     for (int t=0; t<N_TIME; t++) {
 
+#ifdef DEBUG
         printf("[%d] Entrée itération [%d]\n", rank, t);
+#endif
 
-        // if (rank == 0) {
-        //     printf("[%d]\tfield[0,:] = [%g...%g...%g]\n\tfield[:,0] = [%g...%g...%g]\n",
-        // rank, field_new[0][0], field_new[0][N_SPACE_LOCAL/2], field_new[0][N_SPACE_LOCAL-1], field_new[0][0], field_new[N_SPACE_LOCAL/2][0], field_new[N_SPACE_LOCAL-1][0]);
-        // }
-        
         // Résolution approchée équation de D'Alembert
 
         for (int x=1; x < N_SPACE_LOCAL; x++) {
@@ -238,5 +257,15 @@ int main()
     }
 
     MPI_Finalize();
+
+#ifdef TIMER
+    if (rank == 0) {
+        gettimeofday(&t2, NULL);
+        elapsedTime = (t2.tv_sec - t1.tv_sec) * 1000.0;      // sec to ms
+        elapsedTime += (t2.tv_usec - t1.tv_usec) / 1000.0;   // us to ms
+        printf("Temps total (hors initiation) %f ms.\n", elapsedTime);
+    }   
+#endif
+
     return 0;
 }

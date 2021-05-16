@@ -26,7 +26,7 @@ $(LIB)/libmpi_subset.a: $(LIB)/kahn.o $(LIB)/mpi_subset.o
 $(TEST)/FEM: $(TEST)/FEM.o
 	$(CC) $< $(CFLAGS) -o $@ -lm -lnetcdf
 
-$(TEST)/FEM.o: $(TEST)/FEM.c 
+$(TEST)/FEM.o: $(TEST)/FEM.c
 	$(CC) $< $(CFLAGS) -c -o $@
 
 $(TEST)/FEM_MPI_REF: $(TEST)/FEM_MPI_REF.o
