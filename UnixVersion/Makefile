@@ -3,8 +3,8 @@ OCAMLBUILD= ocamlbuild \
 		-libs str,unix \
 		-tags debug,annot
 
-MAIN=Version_Unix
-TARGET=native
+MAIN = crible
+TARGET = native
 
 all: $(MAIN)
 

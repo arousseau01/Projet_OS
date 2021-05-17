@@ -13,8 +13,9 @@
         Objets encapsulés:
             - _kahn_data_size   // donne les tailles en octets des types utilisés
             - _pid_list         // liste des pid des processus forkés par doco
-            - DEBUG             // si défini, affichage d'informations pour debugger
             - _return_process() // fonction du processus retourné par return_()
+
+        DEBUG: variable de préprocesseur contrôlant le niveau de verbose
 */
 
 //#define DEBUG
@@ -32,9 +33,7 @@ channel *new_channel() {
 
 static int _kahn_data_size[] = {
     sizeof(int),
-    sizeof(float),
-    sizeof(double),
-    sizeof(long double)
+    sizeof(float)
     };
     
 void put(void *value, int cnt, channel *chan, Kahn_Datatype dtype) 

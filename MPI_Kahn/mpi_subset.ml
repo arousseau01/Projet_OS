@@ -1,3 +1,6 @@
+(* Implémentation partielle de MPI à partir d'une implémentation de KPN
+    - Non fonctionnel: passage du reste du code à chaque processus non résolu *)
+
 module type MPI = sig
     type mpi_status
     type mpi_comm

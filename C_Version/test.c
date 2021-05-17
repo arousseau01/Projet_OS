@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "kahn.h"
 
+/* Test basique de l'implémentation de KPN: un processus envoi la suite des entiers naturels sur un canal, un autre processus les récupère et les imprime sur la sortie standard */
+
 void *integers(channel *Q) {
     for (int i=1;;i++) {
         put(&i, 1, Q, KAHN_INT);

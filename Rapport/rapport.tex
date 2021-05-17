@@ -31,9 +31,10 @@ Ce projet à pour but de réaliser différentes implémentations d'une interface
     \item Une implémentation basée sur des processus lourds Unix sommuniquant par des sockets
     \item Une implémentation séquentielle 
     \item Une implémentation basée sur une implémentation MPI en OCaml
+    \item Une implémentation en C basée sur des processus Unix communiquant par des pipes
 \end{itemize}
 
-\subsection{Version Unix: processus lourds avec communication via pipes}
+\subsection{Version Unix pipes: processus lourds avec communication via pipes}
 
 Code: \verb|Version_Unix.ml|
 
@@ -41,7 +42,7 @@ Cette implémentation repose sur des processus lourds, initiés par des appels f
 
 L'initiation d'un canal repose sur l'ouverture d'une pipe et la construction de canaux de communications OCaml (\mintinline{OCaml}{in_channel}, \mintinline{OCaml}{out_channel}) à partir les descripteurs de fichiers de l'entrée et de la sortie de la pipe. L'écriture et la lecture sur les canaux se font de manière générique selon les types par marshalling (module \verb|Marshal| OCaml).
 
-\subsection{Version Unix: processus lourds avec communication via sockets}
+\subsection{Version Unix sockets: processus lourds avec communication via sockets}
 
 Code: \verb|Version_Sockets.ml|
 
@@ -55,6 +56,7 @@ Dans l'état des choses cette implémentation de permet rien de plus que l'impl�
 
 \subsection{Version séquentielle}
 
+<<<<<<< HEAD
 Code: \verb|Version_sequentielle.ml|
 
 Cette implémentation utilise une queue pour stocker les actions à effectuer (notamment pour le \texttt{doco}), avec des fonctions \texttt{add} pour ajouter une action à la queue et \texttt{suivant} pour exécuter la première action de la queue.
@@ -75,6 +77,7 @@ MPI (Message Passing Interface) est une norme de bibliothèque permettant la dis
 
 \textbf{Utilisation pour implémentation de KPN}
 
+
 Les canaux de communication sont idenifiés par un entier (\verb|tag|).
 
 L'appel à doco lance le processus $k$ dans le processus $k\mod{N}$.
@@ -86,9 +89,9 @@ Code: \verb|kahn.c| \verb|kahn.h|
 
 On réalise une implémentation en C d'une bibliothèque de réseaux de Kahn basée sur des processus lourds Unix communiquant via des pipes.
 
-Les canaux de commmunications sont les descripteurs de fichiers renvoyés par les appels pipe, les communication se font par appels write et read, les processus sont représentés là aussi par des fonctions (pointeurs vers des fonctions).
+Les canaux de commmunications sont les descripteurs de fichiers renvoyés par les appels pipe, les communication se font par appels write et read, les processus sont représentés là aussi par un couple d'une fonction (pointeur vers une fonction) et des paramètres associés.
 
-Les prototypes des fonctions ne respectent par l'interface fournies en OCaml: les fonctiosn put et get nécessitent la taille du buffer à envoyer et le type des données, la fonction doco demande le nombre de processus à initier et une liste d'arguments à passer aux processus lors de leut initiation.
+Les prototypes des fonctions ne respectent par l'interface fournies en OCaml: les fonctions put et get nécessitent la taille du buffer à envoyer et le type des données.
 
 \subsection{Tests simples des implémentations}
 
@@ -124,7 +127,26 @@ L'utilisation diffère de l'utilisation classique (execution avec mpirun), on la
 On réalise des scripts C utilisant l'implémentation MPI réalisée:
 \begin{itemize}
     \item \verb|test_hello.c| : programme minimal MPI, avec synchronisation
-    \item \verb|test_pi.c| : programme calculant une valeur approchée de $\pi$
+    \item \verb|test_pi.c| : programme calculant une valeur approchée de $\pi$ (formule de Madhava-Leibniz)
+    \item \verb|FEM_MPI.c| :  programme de résolution de l'équation de d'Alembert en milieu homogène non dispersif non absorbant par méthode des différences finies (FEM). les résultats sont écrits sous format netCDF, pour comparaison sont fournis les programmes \verb|FEM.c| (idem mais non parallélisé), \verb|FEM_MPI_REF.c| (idem mais faisant appel à une implémentation MPI complète, testé avec OpenMPI)
 \end{itemize}
+
+\subsection{Résultats}
+
+On réalise un benchmarking trivial pour évaluer les performances de la paralléisation pour les scripts de FEM et de calcul de $\pi$
+
+\begin{itemize}
+    \item \verb|test_pi.c| (réalisé avec \verb|benchmark_PI_MPI.bash|)
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=0.5\linewidth]{../MPI_Kahn_C/test/data-benchmark/plot_pi_benchmark.png}
+        \caption{Résultats du benchmark}
+
+    \end{figure}
+\end{itemize}
+
+Pour des grands nombre d'itération, le temps de calcul suit l'inverse du nombre de processus.
+
+
 
 \end{document}

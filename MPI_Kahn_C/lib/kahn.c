@@ -13,9 +13,11 @@
         Objets encapsulés:
             - _kahn_data_size   // donne les tailles en octets des types utilisés
             - _pid_list         // liste des pid des processus forkés par doco
-            - DEBUG             // si défini, affichage d'informations pour debugger
             - _return_process() // fonction du processus retourné par return_()
+
+        DEBUG: variable de préprocesseur contrôlant le niveau de verbose
 */
+
 
 //#define DEBUG
 
@@ -25,8 +27,11 @@ channel *new_channel() {
     channel *chan = (channel*) malloc(sizeof(channel));
     int fd[2];
     pipe(fd);   // initiation d'une pipe, retourne les file descriptor de in et out dans fd
-    chan->fd_in = fd[1];
-    chan->fd_out = fd[0];
+    chan->fd_in = fd[0];
+    chan->fd_out = fd[1];
+#ifdef DEBUG
+    printf("KAHN\t[%d] NEW CHANNEL ; fd_in = %d\tfd_out = %d\n", (int)getpid(), fd[1], fd[0]);
+#endif
     return chan;
     }
 
@@ -39,13 +44,13 @@ static int _kahn_data_size[] = {
 void put(void *value, int cnt, channel *chan, Kahn_Datatype dtype) 
 {
 #ifdef DEBUG
-    printf("KAHN\t[%d] Entering PUT ; cnt = %d\n", (int)getpid(), cnt);
+    printf("KAHN\t[%d] Entering PUT ; fd_out = %d; cnt = %d\n", (int)getpid(), chan->fd_out, cnt);
 
 #endif
     assert((0 <= dtype) && (dtype < _nb_kahn_datatype));
 
     int total_write = 0;
-    total_write = write(chan->fd_in, value,cnt* _kahn_data_size[dtype]);
+    total_write = write(chan->fd_out, value,cnt* _kahn_data_size[dtype]);
     total_write = total_write;
 #ifdef DEBUG
     printf("KAHN\t[%d] Exiting PUT ; cnt_write = %d\n", (int)getpid(), total_write/_kahn_data_size[dtype]);
@@ -58,14 +63,14 @@ void get(void *value, int cnt,channel *chan, Kahn_Datatype dtype)
 */
 {
 #ifdef DEBUG
-    printf("KAHN\t[%d] Entering GET ; cnt = %d\n", (int)getpid(), cnt);
+    printf("KAHN\t[%d] Entering GET ; fd_in = %d ; cnt = %d\n", (int)getpid(),chan->fd_in, cnt);
 #endif
     assert((0 <= dtype) && (dtype < _nb_kahn_datatype));
 
     int total_read = 0;
 
     while(total_read < cnt* _kahn_data_size[dtype]) {
-        total_read += read(chan->fd_out, value+(total_read/_kahn_data_size[dtype]), cnt* _kahn_data_size[dtype] - total_read);
+        total_read += read(chan->fd_in, value+(total_read/_kahn_data_size[dtype]), cnt* _kahn_data_size[dtype] - total_read);
     }
 
     //while(read(chan->fd_out, value, cnt* _kahn_data_size[dtype]) == 0) {};

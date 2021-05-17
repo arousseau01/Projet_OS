@@ -1,0 +1,56 @@
+void doco(int nb_proc, process *processes[]) {
+
+#ifdef DEBUG
+    printf("[%d] Entering doco, nb_proc = %d\n", (int)getpid(), nb_proc);
+    fflush(stdout);
+#endif
+
+    if (nb_proc > 0){
+
+        pid_t pid = fork();
+        if (pid == 0) {
+
+            /* SON */
+            run(*processes);
+
+            printf("[%d] son\n", (int)getpid());
+            return;
+        }
+
+        else {
+            /* FATHER */
+#ifdef DEBUG
+            printf("[%d] Creating [%d]\n", (int)getpid(), (int)pid);
+#endif  
+            _nb_proc++;
+            doco(--nb_proc, ++processes);
+
+            printf("[%d] Waiting\n", (int)getpid());
+            wait(NULL);
+            //waitpid(pid, NULL, 0);
+            printf("[%d] Waiting's over\n", (int)getpid());
+
+
+#ifdef DEBUG
+            //printf("[%d] Something ended\n", (int)getpid());
+#endif            
+        }
+    }
+
+    if (nb_proc == _nb_proc){
+#ifdef DEBUG
+        printf("[%d] end MPI program\n", (int)getpid());
+#endif     
+        exit(0);
+    }
+
+}
+
+    // File to read data
+    char FILE_NAME[100];
+    if (strcmp(*argv, "./test/FEM_MPI") == 0) {
+        strcpy(FILE_NAME, "./test/data_FEM/FEM_MPI.nc");
+    }
+    if (strcmp(*argv, "./test/FEM_MPI_REF") == 0) {
+        strcpy(FILE_NAME, "./test/data_FEM/FEM_MPI_REF.nc");
+    }

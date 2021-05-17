@@ -29,9 +29,12 @@
             - _mpi_process()    // fonction élementaire processus MPI: change les variables de rang et de canaux attribués puis return (continue éxécution programme à la suite de l'appel MPI_Init)
             - _mpi_split()      // lancement des processus MPI (appel à doco de KPN)
         
-        MPI_Init()  // appel _mpi_args ; _mpi_allocate_channel ; _mpi_split
-        MPI_Send()  // appel put de KPN
-        MPI_Receive // appel get de KPN
+        MPI_Init()      // appel _mpi_args ; _mpi_allocate_channel ; _mpi_split
+        MPI_Send()      // appel put de KPN
+        MPI_Receive()   // appel get de KPN
+        MPI_Barrier()   // synchronisation des processus
+
+        DEBUG : variable préprocesseur contrôlant le niveau de verbose
 */
 
 //#define DEBUG
@@ -75,6 +78,7 @@ static int _mpi_allocate_channels()
 /* Ouverture des canaux */
 {   
     int size = _mpi_size;
+    int fd_out1;
 
     _mpi_channels_global = malloc(size* sizeof(**_mpi_channels_global));
     for (int i=0; i<size; i++) {
@@ -84,9 +88,20 @@ static int _mpi_allocate_channels()
     for (int i=0; i<size; i++) {
         _mpi_channels_global[i][i] = new_channel();
         for (int j=i+1; j<size; j++) {
-            channel *chan = new_channel();
-            _mpi_channels_global[i][j] = chan;
-            _mpi_channels_global[j][i] = chan;
+
+            channel *chan1 = new_channel();
+            channel *chan2 = new_channel();
+
+            fd_out1 = chan1->fd_out;
+
+            _mpi_channels_global[i][j]          = chan1;
+            _mpi_channels_global[i][j]->fd_out  = chan2->fd_out;
+
+            _mpi_channels_global[j][i]          = chan2;
+            _mpi_channels_global[j][i]->fd_out  = fd_out1;
+#ifdef DEBUG
+            printf("MPI\tChannels %d <-> %d:\n\t\t[%d] fd_in = %d\tfd_out = %d\n\t\t[%d] fd_in = %d\tfd_out = %d\n", i, j, i, _mpi_channels_global[i][j]->fd_in, _mpi_channels_global[i][j]->fd_out, j, _mpi_channels_global[j][i]->fd_in, _mpi_channels_global[j][i]->fd_out);
+#endif
         }
     }
 
@@ -271,6 +286,10 @@ int MPI_Recv(void *buf, int cnt, MPI_Datatype dtype, int src, int tag,
     channel *chan = _mpi_channels[src];
 
     get(buf, cnt, chan, _khan2mpi_dtype(dtype));
+
+#ifdef DEBUG
+    printf("MPI\t[%d] Mpi_Receive : done\n", _mpi_rank);
+#endif
     
 
     return MPI_SUCCESS;
