@@ -3,7 +3,7 @@ OCAMLBUILD= ocamlbuild \
 		-libs str,unix \
 		-tags debug,annot
 
-MAIN = Version_Unix
+MAIN = test_Unix
 CRIBLE = crible
 TARGET = native
 

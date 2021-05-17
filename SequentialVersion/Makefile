@@ -3,10 +3,10 @@ OCAMLBUILD= ocamlbuild \
 		-libs str,unix \
 		-tags debug,annot
 
-MAIN=Version_sequentielle
-CRIBLE=crible
-STRASSEN=strassen
-TARGET=native
+MAIN = version_sequentielle
+CRIBLE = crible
+STRASSEN = strassen
+TARGET = native
 
 all: $(MAIN)
 
@@ -41,4 +41,3 @@ realclean: clean
 	rm -f *~ $(STRASSEN)
 
 cleanall: realclean
-

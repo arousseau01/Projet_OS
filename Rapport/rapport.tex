@@ -10,7 +10,14 @@
 \usepackage{xcolor}
 \usepackage{tikz,circuitikz}\usetikzlibrary{calc}
 \usepackage{graphicx}
+
+\usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{minted}
+
+\usepackage{hyperref}
+
+
 \title{Systèmes d'exploitation\\Rapport de projet - Réseaux de Kahn}
 \author{Sylvain Brisson - Arthur Rousseau}
 \date{}
@@ -29,10 +36,11 @@ Ce projet à pour but de réaliser différentes implémentations d'une interface
 \begin{itemize}
     \item Une implémentation basée sur des processus lourds Unix sommuniquant par des pipes
     \item Une implémentation basée sur des processus lourds Unix sommuniquant par des sockets
-    \item Une implémentation séquentielle 
-    \item Une implémentation basée sur une implémentation MPI en OCaml
+    \item Une implémentation séquentielle (parallélisme simulé)
     \item Une implémentation en C basée sur des processus Unix communiquant par des pipes
 \end{itemize}
+
+Les codes sont disponibles sur le dépôt git à \url{https://github.com/arousseau01/Projet_OS.git}.
 
 \subsection{Version Unix pipes: processus lourds avec communication via pipes}
 
@@ -56,7 +64,6 @@ Dans l'état des choses cette implémentation de permet rien de plus que l'impl�
 
 \subsection{Version séquentielle}
 
-<<<<<<< HEAD
 Code: \verb|Version_sequentielle.ml|
 
 Cette implémentation utilise une queue pour stocker les actions à effectuer (notamment pour le \texttt{doco}), avec des fonctions \texttt{add} pour ajouter une action à la queue et \texttt{suivant} pour exécuter la première action de la queue.
@@ -65,27 +72,10 @@ La création d'un processus se ramène alors à \texttt{add} et l'exécution à 
 
 Les canaux sont eux aussi des queues. 
 
-\subsection{Version MPI}
-
-Code: \verb|versionMPI.ml|
-
-Cette dernière version repose sur le module MPI de OCaml (https://github.com/xavierleroy/ocamlmpi).
-
-\textbf{Note sur MPI}
-
-MPI (Message Passing Interface) est une norme de bibliothèque permettant la distribution de calculs sur des clusters à mémoire partagée ou non. On utilise ici l'implémentation opensource OpenMPI (utilisable depuis C et fortran) et le module MPI OCaml (basée sur la bibliothèque C). Dans une application MPI tous les processus éxécutent le même code mais avec des valeurs différentes de la variable \verb|rank| (prenant des valeurs de 1 à $N$, $N$ le nombre de processus). Les commnications points à point se font alors en indiquant le rang du processus source/destination et \verb|tag|, un entier. MPI repose sur des processus lourds, elle ne permet pas de lancer plus de processus qu'il n'y à de slots (coeurs de processeurs, x2 si multithreading) pour minimiser les temps de calcul.
-
-\textbf{Utilisation pour implémentation de KPN}
-
-
-Les canaux de communication sont idenifiés par un entier (\verb|tag|).
-
-L'appel à doco lance le processus $k$ dans le processus $k\mod{N}$.
-
 
 \subsection{Implémentation en C}
 
-Code: \verb|kahn.c| \verb|kahn.h|
+Codes: \verb|kahn.c| \verb|kahn.h|
 
 On réalise une implémentation en C d'une bibliothèque de réseaux de Kahn basée sur des processus lourds Unix communiquant via des pipes.
 
@@ -98,22 +88,34 @@ Les prototypes des fonctions ne respectent par l'interface fournies en OCaml: le
 On test les implémentations avec le test fourni: un processus \verb|integer| génère une suite infinie d'entier (dans l'ordre depuis 1) et les envoi à une autre processus \verb|output| qui affiche ce qu'il reçoit sur la sortie standard.
 
 \section{Applications directe des implémentations}
+
 \subsection{Crible}
+
+Codes: \verb|SequentialVersion/crible.ml| \verb|UnixVersion/crible.ml|
+
 Le crible présenté est inspiré de celui du TP5. Il fait passer chaque entier par une suite de filtres (\texttt{sift}), où chaque filtre teste la divisibilité par un nombre premier. Si on rencontre un nombre premier, on crée un nouveau filtre.
+
 \subsection{Algorithme de Strassen}
+
+Code: \verb|SequentialVersion/strassen.ml|
+
 L'algorithme de Strassen implémenté crée un nouveau processus pour chaque multiplication.
 
 \section{Implémentation MPI basée sur les réseaux de Kahn}
 
+\subsection{Message Passing Interface (MPI)}
+
+MPI (Message Passing Interface) est une norme de bibliothèque permettant la distribution de calculs sur des clusters à mémoire partagée ou non. On utilise ici l'implémentation opensource OpenMPI (utilisable depuis C et fortran) et le module MPI OCaml (basée sur la bibliothèque C). Dans une application MPI tous les processus éxécutent le même code mais avec des valeurs différentes de la variable \verb|rank| (prenant des valeurs de 1 à $N$, $N$ le nombre de processus). Les commnications points à point se font alors en indiquant le rang du processus source/destination et \verb|tag|, un entier. MPI repose sur des processus lourds, elle ne permet pas de lancer plus de processus qu'il n'y à de slots (coeurs de processeurs, x2 si multithreading) pour minimiser les temps de calcul.
+
 \subsection{Implémentation}
 
-A partir de l'implémentation en C de KPN on réalise une implémentation de l'interaface minimale MPI \verb|mpi_subset.h|.
+A partir de l'implémentation en C de KPN on réalise une implémentation de l'interface minimale MPI \\\verb|mpi_subset.h|.
 
-L'utilisation interne de la bibliothèque est identique à l'utilisation de la bibliothèque C standard: appel à MPI\_Init() puis récupération des varibles rank et size (rang du processus et taille du communicateur) puis suite du programme à comportement dépendant de ces deux variables.
+L'utilisation interne de la bibliothèque est identique à l'utilisation de l'interface MPI standard depuis C: appel à \texttt{MPI\_Init()} puis récupération des variables \texttt{rank} et \texttt{size} (rang du processus et taille du communicateur) puis suite du programme à comportement dépendant de ces deux variables.
 
 Les limites de l'implémentation sont:
 \begin{itemize}
-    \item Les tag ne sont pas implémentés
+    \item Les tag pour les communications ne sont pas implémentés
     \item Les wildcards pour la réception ne sont pas implémentées
     \item Seules les communications point à point bloquantes sont implémentées
 \end{itemize}
@@ -133,7 +135,7 @@ On réalise des scripts C utilisant l'implémentation MPI réalisée:
 
 \subsection{Résultats}
 
-On réalise un benchmarking trivial pour évaluer les performances de la paralléisation pour les scripts de FEM et de calcul de $\pi$
+On réalise un benchmarking trivial pour évaluer les performances de la paralléisation pour les scripts de FEM et de calcul de $\pi$.
 
 \begin{itemize}
     \item \verb|test_pi.c| (réalisé avec \verb|benchmark_PI_MPI.bash|)
@@ -141,11 +143,33 @@ On réalise un benchmarking trivial pour évaluer les performances de la parall�
         \centering
         \includegraphics[width=0.5\linewidth]{../MPI_Kahn_C/test/data-benchmark/plot_pi_benchmark.png}
         \caption{Résultats du benchmark}
-
     \end{figure}
+
+    Pour des grands nombre d'itération, le temps de calcul suit l'inverse du nombre de processus.
+
+    \item On calcule les temps de calculs (hors temps d'initialiation) nécéssaire aux programmes \verb|FEM.c| \verb|FEM_MPI.c| et \verb|FEM_MPI_REF.c|. Pour 1000 incréments de temps sur une grille de 300 x 300.
+
+    \begin{table}[!ht]
+        \centering
+        \begin{tabular}{lc}
+            Programme & Temps execution \\
+            \midrule
+            \verb|FEM.c|         & 2777.936000 ms \\
+            \verb|FEM_MPI_REF.c|  & 3555.097000 ms \\
+            \verb|FEM_MPI.c|      & 2332.439000 ms \\
+        \end{tabular}
+    \end{table}
+
+    La bibliothèque OpenMPI utilisée est normalement utilisée pour de le parallélisation sur systèmes à mémoire distribuée, elle performe mal sur des systèmes à mémoire partagée (et qui plus est utilisée ici pour des calculs relativement rapide).
+
+    Notre implémentation MPI, fonctionnant uniquement en local (mémoire partagée) s'en sort mieux. On observe néamoins que, en comparaison avec le test précédent, du fait des nombreuses communications bloquantes nécéessaires à un processus pour passer à l'itération suivante, le gain de temps est moindre que précédemment.
+
+    Faut de temps nous n'avons par réussit à ajouter à cette implémentation la capacité de lancer les calculs en parallèle sur plucieurs machines, avec comunications par sockets. Si la communication aurait été relativement aisée à implémenter le lancement de processus sur une autre machine via le réseau apparaissait plus complexe (utilisation de code shell?).
+    
+
 \end{itemize}
 
-Pour des grands nombre d'itération, le temps de calcul suit l'inverse du nombre de processus.
+
 
 
 
