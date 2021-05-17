@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2020.3.24)  11 MAY 2021 19:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2020.3.24)  15 MAY 2021 10:33
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -1100,11 +1100,11 @@ File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 
 {/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 69.
+(Font)              <10> on input line 74.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 69.
+(Font)              <7> on input line 74.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 69.
+(Font)              <5> on input line 74.
  [2] [3] (/Users/arthur/Documents/Drive Arthur/Travail/L3S2 ENS/Systèmes d'exploitation/Projet_OS/Rapport/rapport.aux)
 runsystem(rm rapport.pyg)...executed.
 
@@ -1118,7 +1118,7 @@ Here is how much of TeX's memory you used:
  36 hyphenation exceptions out of 8191
  55i,6n,48p,991b,248s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}</usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on "/Users/arthur/Documents/Drive Arthur/Travail/L3S2 ENS/Systèmes d'exploitation/Projet_OS/Rapport/rapport.pdf" (3 pages, 167764 bytes).
+Output written on "/Users/arthur/Documents/Drive Arthur/Travail/L3S2 ENS/Systèmes d'exploitation/Projet_OS/Rapport/rapport.pdf" (3 pages, 167962 bytes).
 PDF statistics:
  53 PDF objects out of 1000 (max. 8388607)
  40 compressed objects within 1 object stream

@@ -55,8 +55,13 @@ Dans l'état des choses cette implémentation de permet rien de plus que l'impl�
 
 \subsection{Version séquentielle}
 
-On utilise une queue pour stocker les actions à effectuer (notamment pour le \texttt{doco}), avec des fonctions \texttt{add} pour ajouter une action à la queue et \texttt{suivant} pour exécuter la première action de la queue.\\
+Code: \verb|Version_sequentielle.ml|
+
+Cette implémentation utilise une queue pour stocker les actions à effectuer (notamment pour le \texttt{doco}), avec des fonctions \texttt{add} pour ajouter une action à la queue et \texttt{suivant} pour exécuter la première action de la queue.
+
 La création d'un processus se ramène alors à \texttt{add} et l'exécution à \texttt{suivant}.
+
+Les canaux sont eux aussi des queues. 
 
 \subsection{Version MPI}
 
